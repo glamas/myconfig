@@ -23,9 +23,6 @@ update_interval 1.0
 ##conky运行次数，指刷新的次数，0为永久运行
 total_run_times 0
 
-##消除闪烁，需要own_window支持
-double_buffer yes
-
 ##创建自主窗口
 own_window yes
 ##手动设置WM_CLASS名称，默认为Conky
@@ -45,7 +42,7 @@ own_window_colour black
 ##最小窗口宽度和高度
 minimum_size 1 1
 ##最大窗口宽度
-maximum_width 240
+maximum_width 170
 
 ##创建阴影
 draw_shades no
@@ -91,6 +88,9 @@ cpu_avg_samples 2
 ##网络传输平均数据监控
 net_avg_samples 2
 
+##消除闪烁，需要own_window支持
+double_buffer yes
+
 ##预定义颜色，数字从0到9,颜色用16进制表示时，可以省略#号
 color0 white
 color1 orange
@@ -123,8 +123,6 @@ ${color3}${font 文泉驿正黑:normal:size=8}Up:${color7} ${upspeed enp9s0}/s $
 
 ## time info
 ${color1}${font 文泉驿正黑:bold:size=8}TIME ${hr 2}
-${color3}${voffset -4}${font 文泉驿正黑:size=32}${time %R}${color7}${font 文泉驿正黑:size=10}:${time %S}
-${voffset -40}${color0}${font 文泉驿正黑:size=12}${alignr 0}${time %d/%b}${font}
-${font 文泉驿正黑:size=10}${alignr 0}${time %a}
-${hr 1}
+${color3}${font 文泉驿正黑:size=32}${time %R}${color7}${font 文泉驿正黑:size=10}:${time %S}${voffset -20}${offset -14}${color0}${font 文泉驿正黑:size=12}${time %d/%b}${voffset 14}${offset -24}${font 文泉驿正黑:size=10}${time %a}
+                         ${hr 1}
 ${color6}${font 文泉驿正黑:bold:size=10}Uptime:$alignr${color7}$uptime
