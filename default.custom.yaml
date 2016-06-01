@@ -1,0 +1,11 @@
+# Rime default settings
+# encoding: utf-8
+
+patch:
+  schema_list:
+    - schema: luna_pinyin
+    - schema: wubi_pinyin
+
+  "menu/page_size": 7
+  "style/horizontal": false
+  "switches/@0/reset": 1
