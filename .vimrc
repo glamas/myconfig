@@ -134,10 +134,9 @@ Plugin 'gmarik/vundle'
 " 以下为要安装或更新的插件，不同仓库都有（具体书写规范请参考帮助）
 Plugin 'a.vim'
 Plugin 'bling/vim-airline'
-Plugin 'lokaltog/powerline-fonts'
+"Plugin 'powerline/fonts'                  "字体,要求不高就不要了
 "Plugin 'ctrlp.vim'
 "Bundle 'Align'
-"Bundle 'jiangmiao/auto-pairs'
 "Bundle 'bufexplorer.zip'
 "Bundle 'ccvext.vim'
 "Bundle 'cSyntaxAfter'
@@ -242,6 +241,7 @@ imap <a-l> <Right>
 set number                                            "显示行号
 set laststatus=2                                      "启用状态栏信息
 set cmdheight=2                                       "设置命令行的高度为2，默认为1
+set showcmd                                           "显示命令
 "set cursorline                                        "突出显示当前行
 " set guifont=YaHei_Consolas_Hybrid:h10                 "设置字体:字号（字体名称空格用下划线代替）
 "set nowrap                                            "设置不自动换行
@@ -287,6 +287,8 @@ set writebackup                             "保存文件前建立备份，保�
 set nobackup                                "设置无备份文件
 " set noswapfile                              "设置无临时文件
 " set vb t_vb=                                "关闭提示音
+" terminal下和系统剪切板交互,需要+clipboard支持,查看命令:vim --version|grep clipboard,否则需要重新编译
+"set clipboard=unnamed
 
 " -----------------------------------------------------------------------------
 "  < 单文件编译、连接、运行配置 >
@@ -488,12 +490,6 @@ endfunc
 " 一个对齐的插件，用来——排版与对齐代码，功能强大，不过用到的机会不多
 
 " -----------------------------------------------------------------------------
-"  < auto-pairs 插件配置 >
-" -----------------------------------------------------------------------------
-" 用于括号与引号自动补全，不过会与函数原型提示插件echofunc冲突
-" 所以我就没有加入echofunc插件
-
-" -----------------------------------------------------------------------------
 "  < BufExplorer 插件配置 >
 " -----------------------------------------------------------------------------
 " 快速轻松的在缓存中切换（相当于另一种多个文件间的切换方式）
@@ -607,7 +603,7 @@ set completeopt=menu                        "关闭预览窗口
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline_powerline_fonts = 1
+"let g:airline_powerline_fonts = 1
 let g:airline_section_z='%3p%%/%L %l:%3c[%4B]'
 
 " -----------------------------------------------------------------------------
