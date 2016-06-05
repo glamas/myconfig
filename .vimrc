@@ -198,7 +198,8 @@ set shiftwidth=4                                      "换行时自动缩进4个
 set smarttab                                          "指定按一次backspace就删除shiftwidth宽度的空格
 set foldenable                                        "启用折叠
 set foldmethod=indent                                 "indent 折叠方式
-" set foldmethod=marker                                "marker 折叠方式
+"set foldmethod=marker                                 "marker 折叠方式
+set foldlevel=99                                      "默认不折叠
 
 " 用空格键来开关折叠
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
