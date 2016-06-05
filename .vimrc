@@ -142,10 +142,10 @@ Plugin 'lokaltog/powerline-fonts'
 "Bundle 'ccvext.vim'
 "Bundle 'cSyntaxAfter'
 "Bundle 'Yggdroot/indentLine'
-" Bundle 'javacomplete'
-" Bundle 'vim-javacompleteex'               "更好的 Java 补全插件
+"Bundle 'javacomplete'
+"Bundle 'vim-javacompleteex'               "更好的 Java 补全插件
 "Bundle 'Mark--Karkat'
-" Bundle 'fholgado/minibufexpl.vim'         "好像与 Vundle 插件有一些冲突
+"Bundle 'fholgado/minibufexpl.vim'         "好像与 Vundle 插件有一些冲突
 "Bundle 'Shougo/neocomplcache.vim'
 "Bundle 'scrooloose/nerdcommenter'
 "Bundle 'scrooloose/nerdtree'
