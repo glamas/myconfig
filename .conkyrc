@@ -111,13 +111,13 @@ ${color8}${font 文泉驿正黑:normal:size=8}CPU1: ${color3}$alignr${cpu cpu1}%
 ${color2}${cpubar cpu1}
 ${color8}${font 文泉驿正黑:normal:size=8}CPU2: ${color3}$alignr${cpu cpu2}%
 ${color2}${cpubar cpu2}
-${color8}${font 文泉驿正黑:normal:size=8}RAM: ${color3}$alignr$mem/$memmax
+${color8}${font 文泉驿正黑:normal:size=8}RAM: ${color3}$alignr$mem/$memmax($memperc%)
 ${color2}$membar
 
 ## network info
 ${color1}${font 文泉驿正黑:bold:size=8}NETWORK ${hr 2}
 ${color8}${font 文泉驿正黑:bold:size=8}Wireless:
-${color3}${font 文泉驿正黑:normal:size=8}Up:${color7} ${upspeed eth1}/s${color2}${goto 100}Down:${color6} ${downspeed eth1}/s
+${color3}${font 文泉驿正黑:normal:size=8}Up:${color7} ${upspeed wlp12s0}/s${color2}${goto 100}Down:${color6} ${downspeed wlp12s0}/s
 ${color8}${font 文泉驿正黑:bold:size=8}Wired:
 ${color3}${font 文泉驿正黑:normal:size=8}Up:${color7} ${upspeed enp9s0}/s ${color2}${goto 100}Down:${color6} ${downspeed enp9s0}/s
 
