@@ -217,20 +217,16 @@ set smartcase                                         "如果搜索模式包含�
 " set noincsearch                                       "在输入要搜索的文字时，取消实时匹配
 
 " Ctrl + K 插入模式下光标向上移动
-"imap <c-k> <Up>
-imap <a-k> <Up>
+imap <c-k> <Up>
 
 " Ctrl + J 插入模式下光标向下移动
-"imap <c-j> <Down>
-imap <a-j> <Down>
+imap <c-j> <Down>
 
 " Ctrl + H 插入模式下光标向左移动
-"imap <c-h> <Left>
-imap <a-h> <Left>
+imap <c-h> <Left>
 
 " Ctrl + L 插入模式下光标向右移动
-"imap <c-l> <Right>
-imap <a-l> <Right>
+imap <c-l> <Right>
 
 " 启用每行超过80列的字符提示（字体变蓝并加下划线），不启用就注释掉
 "au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 80 . 'v.\+', -1)
@@ -243,7 +239,7 @@ set laststatus=2                                      "启用状态栏信息
 set cmdheight=2                                       "设置命令行的高度为2，默认为1
 set showcmd                                           "显示命令
 "set cursorline                                        "突出显示当前行
-" set guifont=YaHei_Consolas_Hybrid:h10                 "设置字体:字号（字体名称空格用下划线代替）
+"set guifont=YaHei_Consolas_Hybrid:h10                 "设置字体:字号（字体名称空格用下划线代替）
 "set nowrap                                            "设置不自动换行
 set shortmess=atI                                     "去掉欢迎界面
 
@@ -258,7 +254,7 @@ endif
 if g:isGUI
     colorscheme murphy               "Gvim配色方案
 else
-    colorscheme murphy              "终端配色方案
+    "colorscheme murphy             "终端配色方案
 endif
 
 " 显示/隐藏菜单栏、工具栏、滚动条，可用 Ctrl + F11 切换
@@ -285,10 +281,10 @@ endif
 " -----------------------------------------------------------------------------
 set writebackup                             "保存文件前建立备份，保存成功后删除该备份
 set nobackup                                "设置无备份文件
-" set noswapfile                              "设置无临时文件
+set noswapfile                              "设置无临时文件
 " set vb t_vb=                                "关闭提示音
 " terminal下和系统剪切板交互,需要+clipboard支持,查看命令:vim --version|grep clipboard,否则需要重新编译
-"set clipboard=unnamed
+set clipboard+=unnamed
 
 " -----------------------------------------------------------------------------
 "  < 单文件编译、连接、运行配置 >
@@ -603,6 +599,7 @@ set completeopt=menu                        "关闭预览窗口
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
+"let g:airline#extensions#whitespace#checks = []
 "let g:airline_powerline_fonts = 1
 let g:airline_section_z='%3p%%/%L %l:%3c[%4B]'
 
