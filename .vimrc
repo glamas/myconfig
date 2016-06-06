@@ -135,6 +135,8 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'a.vim'
 Plugin 'bling/vim-airline'
 "Plugin 'powerline/fonts'                  "字体,要求不高就不要了
+Plugin 'ajh17/VimCompletesMe'              "tab补全,使用vim内置方法,和emmet-vim冲突
+Plugin 'scrooloose/syntastic'              "语法检查插件
 "Plugin 'ctrlp.vim'
 "Bundle 'Align'
 "Bundle 'bufexplorer.zip'
@@ -254,7 +256,7 @@ endif
 if g:isGUI
     colorscheme murphy               "Gvim配色方案
 else
-    "colorscheme murphy             "终端配色方案
+    colorscheme murphy             "终端配色方案
 endif
 
 " 显示/隐藏菜单栏、工具栏、滚动条，可用 Ctrl + F11 切换
@@ -282,7 +284,7 @@ endif
 set writebackup                             "保存文件前建立备份，保存成功后删除该备份
 set nobackup                                "设置无备份文件
 set noswapfile                              "设置无临时文件
-" set vb t_vb=                                "关闭提示音
+set vb t_vb=                                "关闭提示音
 " terminal下和系统剪切板交互,需要+clipboard支持,查看命令:vim --version|grep clipboard,否则需要重新编译
 set clipboard+=unnamed
 
@@ -547,10 +549,10 @@ let g:indentLine_color_term = 239
 " "                                            <C-S-Tab> 向后循环切换到每个buffer上,并在当前窗口打开
 
 " 在不使用 MiniBufExplorer 插件时也可用<C-k,j,h,l>切换到上下左右的窗口中去
-noremap <c-k> <c-w>k
-noremap <c-j> <c-w>j
-noremap <c-h> <c-w>h
-noremap <c-l> <c-w>l
+"noremap <c-k> <c-w>k
+"noremap <c-j> <c-w>j
+"noremap <c-h> <c-w>h
+"noremap <c-l> <c-w>l
 
 " -----------------------------------------------------------------------------
 "  < neocomplcache 插件配置 >
