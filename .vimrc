@@ -111,25 +111,25 @@ endif
 " -----------------------------------------------------------------------------
 " 用于更方便的管理vim插件，具体用法参考 :h vundle 帮助
 " 安装方法为在终端输入如下命令
-" git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+" git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/vundle
 " 如果想在 windows 安装就必需先安装 "git for window"，可查阅网上资料
 
 set nocompatible                                      "禁用 Vi 兼容模式
 filetype off                                          "禁用文件类型侦测
 
 if g:islinux
-    set rtp+=~/.vim/bundle/vundle/
+    set rtp+=~/.vim/bundle/Vundle.vim/
     call vundle#rc()
     call vundle#begin()
 else
-    set rtp+=$VIM/vimfiles/bundle/vundle/
+    set rtp+=$VIM/vimfiles/bundle/Vundle.vim/
     let path='$VIM/vimfiles/bundle'
     call vundle#rc('$VIM/vimfiles/bundle/')
     call vundle#begin(path)
 endif
 
 " 使用Vundle来管理Vundle，这个必须要有。
-Plugin 'gmarik/vundle'
+Plugin 'VundleVim/Vundle.vim'
 
 " 以下为要安装或更新的插件，不同仓库都有（具体书写规范请参考帮助）
 Plugin 'a.vim'
