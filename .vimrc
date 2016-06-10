@@ -137,6 +137,9 @@ Plugin 'bling/vim-airline'
 "Plugin 'powerline/fonts'                  "字体,要求不高就不要了
 Plugin 'ajh17/VimCompletesMe'              "tab补全,使用vim内置方法,和emmet-vim冲突
 Plugin 'scrooloose/syntastic'              "语法检查插件
+Plugin 'mhinz/vim-startify'                "开始页面插件
+"Plugin 'SirVer/ultisnips'                 "代码片段,和tab插件冲突
+Plugin 'scrooloose/nerdtree'               "目录树
 "Plugin 'ctrlp.vim'
 "Bundle 'Align'
 "Bundle 'bufexplorer.zip'
@@ -147,18 +150,13 @@ Plugin 'scrooloose/syntastic'              "语法检查插件
 "Bundle 'vim-javacompleteex'               "更好的 Java 补全插件
 "Bundle 'Mark--Karkat'
 "Bundle 'fholgado/minibufexpl.vim'         "好像与 Vundle 插件有一些冲突
-"Bundle 'Shougo/neocomplcache.vim'
 "Bundle 'scrooloose/nerdcommenter'
-"Bundle 'scrooloose/nerdtree'
-"Bundle 'OmniCppComplete'
-"Bundle 'Lokaltog/vim-powerline'
 "Bundle 'repeat.vim'
 "Bundle 'msanders/snipmate.vim'
 "Bundle 'wesleyche/SrcExpl'
 " Bundle 'ervandew/supertab'                "有时与 snipmate 插件冲突
 "Bundle 'std_c.zip'
 "Bundle 'tpope/vim-surround'
-"Bundle 'scrooloose/syntastic'
 "Bundle 'majutsushi/tagbar'
 "Bundle 'taglist.vim'
 "Bundle 'TxtBrowser'
@@ -240,7 +238,7 @@ set number                                            "显示行号
 set laststatus=2                                      "启用状态栏信息
 set cmdheight=2                                       "设置命令行的高度为2，默认为1
 set showcmd                                           "显示命令
-"set cursorline                                        "突出显示当前行
+set cursorline                                        "突出显示当前行
 "set guifont=YaHei_Consolas_Hybrid:h10                 "设置字体:字号（字体名称空格用下划线代替）
 "set nowrap                                            "设置不自动换行
 set shortmess=atI                                     "去掉欢迎界面
@@ -256,7 +254,7 @@ endif
 if g:isGUI
     colorscheme murphy               "Gvim配色方案
 else
-    colorscheme murphy             "终端配色方案
+    colorscheme molokai             "终端配色方案
 endif
 
 " 显示/隐藏菜单栏、工具栏、滚动条，可用 Ctrl + F11 切换
@@ -286,7 +284,7 @@ set nobackup                                "设置无备份文件
 set noswapfile                              "设置无临时文件
 set vb t_vb=                                "关闭提示音
 " terminal下和系统剪切板交互,需要+clipboard支持,查看命令:vim --version|grep clipboard,否则需要重新编译
-set clipboard+=unnamed
+"set clipboard+=unnamed
 
 " -----------------------------------------------------------------------------
 "  < 单文件编译、连接、运行配置 >
@@ -509,7 +507,7 @@ endfunc
 "  < cSyntaxAfter 插件配置 >
 " -----------------------------------------------------------------------------
 " 高亮括号与运算符等
-au! BufRead,BufNewFile,BufEnter *.{c,cpp,h,java,javascript} call CSyntaxAfter()
+"au! BufRead,BufNewFile,BufEnter *.{c,cpp,h,java,javascript} call CSyntaxAfter()
 
 " -----------------------------------------------------------------------------
 "  < indentLine 插件配置 >
@@ -555,14 +553,6 @@ let g:indentLine_color_term = 239
 "noremap <c-l> <c-w>l
 
 " -----------------------------------------------------------------------------
-"  < neocomplcache 插件配置 >
-" -----------------------------------------------------------------------------
-" 关键字补全、文件路径补全、tag补全等等，各种，非常好用，速度超快。
-let g:neocomplcache_enable_at_startup = 1     "vim 启动时启用插件
-" let g:neocomplcache_disable_auto_complete = 1 "不自动弹出补全列表
-" 在弹出补全列表后用 <c-p> 或 <c-n> 进行上下选择效果比较好
-
-" -----------------------------------------------------------------------------
 "  < nerdcommenter 插件配置 >
 " -----------------------------------------------------------------------------
 " 我主要用于C/C++代码注释(其它的也行)
@@ -582,17 +572,6 @@ let NERDSpaceDelims = 1                     "在左注释符之后，右注释�
 
 " 常规模式下输入 F2 调用插件
 nmap <F2> :NERDTreeToggle<CR>
-
-" -----------------------------------------------------------------------------
-"  < omnicppcomplete 插件配置 >
-" -----------------------------------------------------------------------------
-" 用于C/C++代码补全，这种补全主要针对命名空间、类、结构、共同体等进行补全，详细
-" 说明可以参考帮助或网络教程等
-" 使用前先执行如下 ctags 命令（本配置中可以直接使用 ccvext 插件来执行以下命令）
-" ctags -R --c++-kinds=+p --fields=+iaS --extra=+q
-" 我使用上面的参数生成标签后，对函数使用跳转时会出现多个选择
-" 所以我就将--c++-kinds=+p参数给去掉了，如果大侠有什么其它解决方法希望不要保留呀
-set completeopt=menu                        "关闭预览窗口
 
 " -----------------------------------------------------------------------------
 "  < vim-airline 插件配置 >
