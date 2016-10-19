@@ -42,7 +42,7 @@ own_window_colour black
 ##最小窗口宽度和高度
 minimum_size 1 1
 ##最大窗口宽度
-maximum_width 170
+maximum_width 180
 
 ##创建阴影
 draw_shades no
@@ -123,6 +123,6 @@ ${color3}${font 文泉驿正黑:normal:size=8}Up:${color7} ${upspeed enp9s0}/s $
 
 ## time info
 ${color1}${font 文泉驿正黑:bold:size=8}TIME ${hr 2}
-${color3}${font 文泉驿正黑:size=32}${time %R}${color7}${font 文泉驿正黑:size=10}:${time %S}${voffset -20}${offset -14}${color0}${font 文泉驿正黑:size=12}${time %d/%b}${voffset 14}${offset -24}${font 文泉驿正黑:size=10}${time %a}
-                         ${hr 1}
+${color3}${font 文泉驿正黑:size=32}${time %R}${color7}${font 文泉驿正黑:size=10}:${time %S}${voffset -20}${offset -14}${color0}${font 文泉驿正黑:size=12}${time %d/%b}${voffset 18}${offset -24}${font 文泉驿正黑:size=10}${time %a}
+${voffset 0}${offset 0}${hr 1}
 ${color6}${font 文泉驿正黑:bold:size=10}Uptime:$alignr${color7}$uptime
