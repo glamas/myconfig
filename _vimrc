@@ -333,7 +333,7 @@ nnoremap <F5> :UndotreeToggle<cr>
 
 "                           < 功能/代码增强插件 >
 " -------------------- 语法检查插件
-if version < 800
+if ( version < 800 )
     Plug 'scrooloose/syntastic'
 
     set statusline+=%#warningmsg#
@@ -345,7 +345,7 @@ if version < 800
     let g:syntastic_check_on_wq = 0
 else
     Plug 'w0rp/ale'
-    
+
     " 文档 https://github.com/w0rp/ale
     let g:ale_completion_enabled = 1
 endif
