@@ -76,6 +76,9 @@ endif
 "                           << 用户自定义配置 >>
 " =============================================================================
 "                               < 文件和编码配置 >
+"禁用 Vi 兼容模式
+set nocompatible
+
 " 注：使用utf-8格式后，软件与程序源码、文件路径不能有中文，否则报错
 set encoding=utf-8                              " 设置gvim内部编码
 set fileencoding=utf-8                          " 设置当前文件编码
@@ -91,9 +94,9 @@ filetype plugin on                              " 针对不同的文件类型加
 
 " 解决乱码
 if (g:iswindows && g:isGUI)
-    source $VIMRUNTIME/delmenu.vim              " 解决菜单乱码
-    source $VIMRUNTIME/menu.vim
     language messages zh_CN.utf-8               " 解决consle输出乱码
+    "source $VIMRUNTIME/delmenu.vim              " 解决菜单乱码
+    "source $VIMRUNTIME/menu.vim
 endif
 
 
@@ -250,6 +253,9 @@ let g:airline#extensions#tabline#formatter = 'unique_tail'
 "let g:airline#extensions#whitespace#checks = [ 'indent', 'trailing', 'long', 'mixed-indent-file' ]
 let g:airline#extensions#whitespace#checks = [ 'indent', 'long', 'mixed-indent-file' ]
 "let g:airline_powerline_fonts = 1
+"let g:airline#extensions#wordcount#format = '%d wd'
+let g:airline#extensions#wordcount#enabled = 0  " 是否显示单词统计，按空格，tab，换行分割，不准确
+"let g:airline#extensions#wordcount#filetypes = ''
 let g:airline_section_z = '%3p%%/%L %l:%3c[%4B]'
 
 " -------------------- 字体,需要安装，要求不高就不要了
