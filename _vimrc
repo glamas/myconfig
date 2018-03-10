@@ -95,8 +95,8 @@ filetype plugin on                              " 针对不同的文件类型加
 " 解决乱码
 if (g:iswindows && g:isGUI)
     language messages zh_CN.utf-8               " 解决consle输出乱码
-    "source $VIMRUNTIME/delmenu.vim              " 解决菜单乱码
-    "source $VIMRUNTIME/menu.vim
+    source $VIMRUNTIME/delmenu.vim              " 解决菜单乱码
+    source $VIMRUNTIME/menu.vim
 endif
 
 
