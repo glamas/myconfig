@@ -281,7 +281,9 @@ let g:SuperTabDefaultCompletionType = "<c-n>"   " 从上到下顺序
 
 " ----------------------------------------------------------------------------
 "                           补全插件2
-Plug 'maralla/completor.vim'
+if ( version >= 800 )
+	Plug 'maralla/completor.vim'
+endif
 
 " ----------------------------------------------------------------------------
 "                           其他补全插件
@@ -299,8 +301,9 @@ Plug 'SirVer/ultisnips'
 "Plug 'honza/vim-snippets'                    " 其他人代码片段
 
 let g:UltiSnipsExpandTrigger="<tab>"            " 如果使用YouCompleteMe，不要使用tab
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsListSnippets="<c-tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-f>"
+let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 "let g:UltiSnipsEditSplit="vertical"            " 切分窗口?
 " 设置python版本
 if has("python3")
@@ -309,7 +312,7 @@ elseif has("python")
     let g:UltiSnipsUsePythonVersion = 2
 endif
 " 设置代码片段目录，需要在runtimepath下
-let g:UltiSnipsSnippetDirectories=["UltiSnips","ultisnips"]
+"let g:UltiSnipsSnippetDirectories=["UltiSnips"]
 " 个人代码片段目录
 if g:islinux
     let g:UltiSnipsSnippetsDir="~/.vim/ultisnips/"
