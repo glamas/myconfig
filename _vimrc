@@ -300,8 +300,9 @@ endif
 Plug 'SirVer/ultisnips'
 "Plug 'honza/vim-snippets'                    " 其他人代码片段
 
-let g:UltiSnipsExpandTrigger="<tab>"            " 如果使用YouCompleteMe，不要使用tab
 let g:UltiSnipsListSnippets="<c-tab>"
+"let g:UltiSnipsExpandTrigger="<tab>"            " 如果使用YouCompleteMe，不要使用tab
+let g:UltiSnipsExpandTrigger="<c-f>"
 let g:UltiSnipsJumpForwardTrigger="<c-f>"
 let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 "let g:UltiSnipsEditSplit="vertical"            " 切分窗口?
