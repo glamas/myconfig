@@ -314,7 +314,7 @@ elseif has("python")
 endif
 " 个人代码片段保存目录
 if g:islinux
-    let SnippetPath='~/.vim/ultisnips/'
+    let SnippetPath=$HOME . '/.vim/ultisnips/'
 else
     let SnippetPath='$VIM/vimfiles/ultisnips/'
 endif
