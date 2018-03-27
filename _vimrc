@@ -312,14 +312,15 @@ if has("python3")
 elseif has("python")
     let g:UltiSnipsUsePythonVersion = 2
 endif
-" 设置代码片段目录，需要在runtimepath下
-let g:UltiSnipsSnippetDirectories=["ultisnips"]
-" 个人代码片段目录
+" 个人代码片段保存目录
 if g:islinux
-    let g:UltiSnipsSnippetsDir="~/.vim/ultisnips/"
+    let SnippetPath='~/.vim/ultisnips/'
 else
-    let g:UltiSnipsSnippetsDir="$VIM/vimfiles/ultisnips/"
+    let SnippetPath='$VIM/vimfiles/ultisnips/'
 endif
+let g:UltiSnipsSnippetsDir=SnippetPath
+" 设置代码片段搜索目录(需要在runtimepath下)
+let g:UltiSnipsSnippetDirectories=["UltiSnips",SnippetPath]
 
 " ----------------------------------------------------------------------------
 "                           对齐插件
