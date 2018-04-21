@@ -320,7 +320,8 @@ else
 endif
 let g:UltiSnipsSnippetsDir=SnippetPath
 " 设置代码片段搜索目录(需要在runtimepath下)
-let g:UltiSnipsSnippetDirectories=["UltiSnips",SnippetPath]
+"let g:UltiSnipsSnippetDirectories=["UltiSnips",SnippetPath]
+let g:UltiSnipsSnippetDirectories=[SnippetPath]
 
 " ----------------------------------------------------------------------------
 "                           对齐插件
