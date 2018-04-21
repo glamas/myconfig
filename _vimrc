@@ -364,10 +364,12 @@ Plug 'tpope/vim-surround'
 
 " ----------------------------------------------------------------------------
 "                           文件查找插件
-if g:islinux
-    Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
-else
-    Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
+if has('patch-7.4.330')
+    if g:islinux
+        Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
+    else
+        Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
+    endif
 endif
 
 " https://github.com/Yggdroot/LeaderF
