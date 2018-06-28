@@ -138,11 +138,11 @@ au BufRead,BufNewFile,BufEnter * cd %:p:h       " 自动切换目录为当前编
 nmap cS :%s/\s\+$//g<CR>:noh<CR>                " 常规模式下输入 cS 清除行尾空格
 nmap cM :%s/\r$//g<CR>:noh<CR>                  " 常规模式下输入 cM 清除行尾 ^M 符号
 
-"  插入模式下光标移动
-imap <c-k> <Up>
-imap <c-j> <Down>
-imap <c-h> <Left>
-imap <c-l> <Right>
+" 插入模式下光标移动
+inoremap <a-k> <Up>
+inoremap <a-j> <Down>
+inoremap <a-h> <Left>
+inoremap <a-l> <Right>
 
 
 "                               < 界面配置 >
@@ -229,6 +229,7 @@ Plug 'mhinz/vim-startify'
 " ----------------------------------------------------------------------------
 "                           代码配色方案
 Plug 'mhinz/vim-janah'
+Plug 'NLKNguyen/papercolor-theme'
 
 " ----------------------------------------------------------------------------
 "                           彩虹括号增强版，手动 :RainbowToggle
@@ -244,6 +245,9 @@ let g:rainbow_active = 1
 "let g:indentLine_char = '┆'                     " ¦, ┆, │, ⎸, or ▏
 "let g:indentLine_leadingSpaceEnabled = 1
 "let g:indentLine_leadingSpaceChar = '.'
+		"1
+Plug 'nathanaelkane/vim-indent-guides'
+let g:indent_guides_enable_on_vim_startup = 1
 
 " ----------------------------------------------------------------------------
 "                           状态栏/标签栏增强插件
@@ -320,8 +324,7 @@ else
 endif
 let g:UltiSnipsSnippetsDir=SnippetPath
 " 设置代码片段搜索目录(需要在runtimepath下)
-"let g:UltiSnipsSnippetDirectories=["UltiSnips",SnippetPath]
-let g:UltiSnipsSnippetDirectories=[SnippetPath]
+let g:UltiSnipsSnippetDirectories=["UltiSnips",SnippetPath]
 
 " ----------------------------------------------------------------------------
 "                           对齐插件
@@ -364,12 +367,10 @@ Plug 'tpope/vim-surround'
 
 " ----------------------------------------------------------------------------
 "                           文件查找插件
-if has('patch-7.4.330')
-    if g:islinux
-        Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
-    else
-        Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
-    endif
+if g:islinux
+    Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
+else
+    Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
 endif
 
 " https://github.com/Yggdroot/LeaderF
@@ -380,7 +381,7 @@ endif
 
 " ----------------------------------------------------------------------------
 "                           撤销目录树，手动 :UndotreeToggle
-Plug 'mbbill/undotree'
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 
 " 显示样式，（tree，diff）：1左上，左下，2左上，底部，3右上，右下，4右上，底部
 let g:undotree_WindowLayout = 3
@@ -413,6 +414,7 @@ else
 
     " 文档 https://github.com/w0rp/ale
     let g:ale_completion_enabled = 1
+    "let g:airline#extensions#ale#enabled = 1
 endif
 
 " ----------------------------------------------------------------------------
@@ -434,7 +436,7 @@ nnoremap [w :PrevTrailingWhitespace<CR>
 
 " ----------------------------------------------------------------------------
 "                           目录树
-Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 
 nmap <F2> :NERDTreeToggle<CR>                   " 常规模式下输入 F2 调用插件
 let NERDTreeMinimalUI = 1
@@ -474,10 +476,12 @@ call plug#end()
 " ----------------------------------------------------------------------------
 
 "                           < 插件安装完毕后配置 >
+set background=dark
+"let g:airline_theme='papercolor'
 if g:isGUI
-    colorscheme janah                           " Gvim配色方案
+    colorscheme PaperColor                           " Gvim配色方案
 else
-    colorscheme janah                           " 终端配色方案
+    colorscheme PaperColor                           " 终端配色方案
 endif
 
 
