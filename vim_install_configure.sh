@@ -1,5 +1,6 @@
 
 yum install lua_devel ncurses ncurses-devel perl-devel perl-ExtUtils-Embed ruby ruby-devel
+yum install libXt-devel #如果报缺少X11 header files
 
 ##./configure --prefix=/usr/local \
 CFLAGS="-I/usr/lib64/perl5/CORE/"		#如果报缺少EXTERN.h的错
