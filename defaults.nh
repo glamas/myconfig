@@ -5,6 +5,7 @@ OPTIONS=!dark_room
 OPTIONS=showexp
 OPTIONS=scores:10t 2a o
 OPTIONS=nobones
+OPTIONS=altmeta
 
 
 # Pet
