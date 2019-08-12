@@ -1,0 +1,1 @@
+set CHERE_INVOKING=1  & set "PATH=%ConEmuDir%\..\git-for-windows\usr\bin;%PATH%" & %ConEmuDir%\..\git-for-windows\git-cmd.exe --no-cd --command=%ConEmuDir%\ConEmu\conemu-msys2-64.exe  -t xterm /usr/bin/bash.exe -l -i -new_console:p
