@@ -49,6 +49,7 @@ if [ "$CMDER_ROOT" = "" -a "$ConEmuDir" != "" ] ; then
   if [ -d "${ConEmuDir}../../vendor" ] ; then
     case "$ConEmuDir" in *\\*) CMDER_ROOT=$( cd "$(cygpath -u "$ConEmuDir")/../.." ; pwd );; esac
   else
+    CMDER_ROOT=$ConEmuDir
     echo "Running in ConEmu without Cmder, skipping Cmder integration."
   fi
 elif [ "$CMDER_ROOT" != "" ] ; then
@@ -62,8 +63,11 @@ if [ ! "$CMDER_ROOT" = "" ] ; then
   echo "Using \"CMDER_ROOT\" at \"${CMDER_ROOT}\"."
 
   export CMDER_ROOT
-
-  PATH=${CMDER_ROOT}/bin:${CMDER_ROOT}/vendor/bin:$PATH:${CMDER_ROOT}
+  if [ -d "${CMDER_ROOT}/vendor/bin" ] ; then
+    PATH=${CMDER_ROOT}/bin:${CMDER_ROOT}/vendor/bin:$PATH:${CMDER_ROOT}
+  else
+    PATH=${CMDER_ROOT}/bin:$PATH:${CMDER_ROOT}
+  fi
 
   export PATH
 
@@ -106,7 +110,7 @@ if [ ! "$CMDER_ROOT" = "" ] ; then
     fi
   fi
 
-  if [ ! -f "${CmderUserProfilePath}" ] ; then
+  if [ ! -f "${CmderUserProfilePath}" -a -d "${CMDER_ROOT}/vendor/" ] ; then
       echo Creating user startup file: "${CmderUserProfilePath}"
       cp "${CMDER_ROOT}/vendor/user_profile.sh.default" "${CmderUserProfilePath}"
   fi
