@@ -59,6 +59,7 @@ fi
 if [ ! "$CMDER_ROOT" = "" ] ; then
   # Remove any trailing '/'
   CMDER_ROOT=$(echo $CMDER_ROOT | sed 's:/*$::')
+  CMDER_ROOT=$(cygpath -u "$CMDER_ROOT")
 
   echo "Using \"CMDER_ROOT\" at \"${CMDER_ROOT}\"."
 
