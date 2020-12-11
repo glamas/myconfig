@@ -1,5 +1,5 @@
 " ============================================================================
-"        << 判断操作系统是 Windows 还是 Linux 和判断是终端还是 Gvim >>
+"               << 判断操作系统是 Windows 还是 Linux 和判断是终端还是 Gvim >>
 " ============================================================================
 "               < 判断操作系统是否是 Windows 还是 Linux >
 let g:iswindows = 0
@@ -11,7 +11,7 @@ else
 endif
 
 
-"                           < 判断是终端还是 Gvim >
+"               < 判断是终端还是 Gvim >
 if has("gui_running")
     let g:isGUI = 1
 else
@@ -19,9 +19,9 @@ else
 endif
 
 " ============================================================================
-"                          << 软件默认配置 >>
+"               << 软件默认配置 >>
 " ============================================================================
-"                       < Windows Gvim 默认配置>
+"               < Windows Gvim 默认配置>
 if (g:iswindows && g:isGUI)
     source $VIMRUNTIME/vimrc_example.vim
     source $VIMRUNTIME/mswin.vim
@@ -53,7 +53,7 @@ if (g:iswindows && g:isGUI)
     endfunction
 endif
 
-"                       < Linux Gvim/Vim 默认配置>
+"               < Linux Gvim/Vim 默认配置>
 if g:islinux
     if g:isGUI
         if filereadable("/etc/vim/gvimrc.local")
@@ -71,19 +71,18 @@ endif
 
 
 
-
 " ============================================================================
-"                           << 用户自定义配置 >>
+"               << 用户自定义配置 >>
 " ============================================================================
-"                               < 文件和编码配置 >
-"禁用 Vi 兼容模式
+"               < 文件和编码配置 >
+" 禁用 Vi 兼容模式
 set nocompatible
 
 " 注：使用utf-8格式后，软件与程序源码、文件路径不能有中文，否则报错
 set encoding=utf-8                              " 设置gvim内部编码
 set fileencoding=utf-8                          " 设置当前文件编码
-set fileencodings=ucs-bom,utf-8,gb2312,gb18030,gbk,cp936,latin1       " 设置支持打开的文件的编码
 set termencoding=utf-8
+set fileencodings=ucs-bom,utf-8,gb2312,gb18030,gbk,cp936,latin1       " 设置支持打开的文件的编码
 
 " 文件格式，默认 ffs=dos,unix
 set fileformat=unix                             " 设置新文件的<EOL>格式
@@ -101,7 +100,7 @@ if (g:iswindows && g:isGUI)
 endif
 
 
-"                           < 文件编辑的配置 >
+"               < 文件编辑的配置 >
 " 代码高亮
 if has("syntax")
     syntax on
@@ -146,7 +145,7 @@ inoremap <a-h> <Left>
 inoremap <a-l> <Right>
 
 
-"                               < 界面配置 >
+"               < 界面配置 >
 set shortmess=atI                               " 去掉欢迎界面
 set number                                      " 显示行号
 set laststatus=2                                " 启用状态栏信息
@@ -184,7 +183,7 @@ if g:isGUI
 endif
 
 
-"                               < 其它配置 >
+"               < 其它配置 >
 "set guifont=YaHei_Consolas_Hybrid:h10          " 设置字体:字号（字体名称空格用下划线代替）
 "set guifont=Consolas:h12
 "set guifontwide=Consolas:h12 
@@ -203,9 +202,9 @@ endif
 
 
 " ============================================================================
-"                           << 插件配置 >>
+"               << 插件配置 >>
 " ============================================================================
-"                           < vim-plug 插件管理工具 >
+"               < vim-plug 插件管理工具 >
 " 安装方法，将plugin.vim文件下载并保存到autoload/
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 " 或者：
@@ -213,47 +212,85 @@ endif
 " 如果想在 windows 安装就必需先安装 "git for window"，可查阅网上资料
 
 
-"                           < 插件安装目录 >
+"               < 插件安装目录 >
 if g:islinux
-    set rtp+=~/.vim/packages/
-    call plug#begin('~/.vim/packages')
+" vim的配置路径是~/.vim，配置文件是~/.vimrc，插件路径是~/.vim/packages
+" nvim的配置路径是~/.config/nvim，配置文件是~/.config/nvim/init.vim，插件路径是~/.config/nvim/packages
+    if has("nvim")
+        " 需要手动链接vim的配置
+        "ln -s ~/.vim .config/nvim
+        "ln -s ~/.vimrc .config/nvim/init.vim
+        let g:vim_current_editor = "nvim"
+        let g:vim_plugin_path="~/.config/nvim/autoload/plug.vim"
+        let g:vim_plugin_install_path="~/.config/nvim/packages"
+    else
+        let g:vim_current_editor = "vim"
+        let g:vim_plugin_path="~/.vim/autoload/plug.vim"
+        let g:vim_plugin_install_path="~/.vim/packages"
+        if !expand("~/.vim/packages")
+            silent exec "!mkdir -p ~/.vim"
+        endif
+    endif
+
+    let vimplug_exists=expand(g:vim_plugin_path)
+    set rtp+=g:vim_plugin_install_path
 else
     "set rtp+=$VIM/vimfiles/
-    let path='$VIM/vimfiles/packages'
-    call plug#begin(path)
+    let g:vim_plugin_install_path='$VIM/vimfiles/packages'
 endif
 
+" 启动时自动安装插件：http://vim-bootstrap.com/
+if has('win32')&&!has('win64')
+  let curl_exists=expand('C:\Windows\Sysnative\curl.exe')
+else
+  let curl_exists=expand('curl')
+endif
 
-"                           < 显示增强插件 >
+if !filereadable(vimplug_exists)
+  if !executable(curl_exists)
+    echoerr "You have to install curl or first install vim-plug yourself!"
+    execute "q!"
+  endif
+  echo "Installing Vim-Plug..."
+  echo ""
+  silent exec "!"curl_exists" -fLo " . shellescape(vimplug_exists) . " --create-dirs https://ghproxy.com/https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+  let g:not_finish_vimplug = "yes"
+
+  autocmd VimEnter * PlugInstall
+endif
+
+call plug#begin(expand(g:vim_plugin_install_path))
+
+"               < 显示增强插件 >
 " ----------------------------------------------------------------------------
-"                           开始页面插件
+"               - 开始页面插件 -
 Plug 'mhinz/vim-startify'
 
 " ----------------------------------------------------------------------------
-"                           代码配色方案
-Plug 'mhinz/vim-janah'
-Plug 'NLKNguyen/papercolor-theme'
+"               - 代码配色方案 -
+"Plug 'mhinz/vim-janah'
+"Plug 'NLKNguyen/papercolor-theme'
 
 " ----------------------------------------------------------------------------
-"                           彩虹括号增强版，手动 :RainbowToggle
+"               - 彩虹括号增强版，手动 :RainbowToggle -
 Plug 'luochen1990/rainbow'
 
 let g:rainbow_active = 1
 
 " ----------------------------------------------------------------------------
-"                           缩进显示,暂时没找到好的
+"               - 缩进显示,暂时没找到好的 -
 "Plug 'Yggdroot/indentLine'
 
-"let g:indentLine_setColors = 0                 " 0设置竖线背景为灰色
+"let g:indentLine_setColors = 0                  " 0设置竖线背景为灰色
 "let g:indentLine_char = '┆'                     " ¦, ┆, │, ⎸, or ▏
 "let g:indentLine_leadingSpaceEnabled = 1
 "let g:indentLine_leadingSpaceChar = '.'
 
-Plug 'nathanaelkane/vim-indent-guides'
-let g:indent_guides_enable_on_vim_startup = 1
+"Plug 'nathanaelkane/vim-indent-guides'
+"let g:indent_guides_enable_on_vim_startup = 1
 
 " ----------------------------------------------------------------------------
-"                           状态栏/标签栏增强插件
+"               - 状态栏/标签栏增强插件 -
 Plug 'vim-airline/vim-airline'
 
 " Tab
@@ -271,36 +308,36 @@ let g:airline#extensions#wordcount#enabled = 0  " 是否显示单词统计，按
 let g:airline_section_z = '%3p%%/%L %l:%3c[%4B]'
 
 " ----------------------------------------------------------------------------
-"                           字体,需要安装，要求不高就不要了
+"               - 字体,需要安装，要求不高就不要了 -
 "Plug 'powerline/fonts'
 
 " ----------------------------------------------------------------------------
-"                           代码状态插件
+"               - 代码状态插件 -
 Plug 'airblade/vim-gitgutter'
 
-"                           < 编辑增强插件 >
+"               < 编辑增强插件 >
 " ----------------------------------------------------------------------------
-"                           补全插件1
+"               - 补全插件1 -
 "Plug 'ervandew/supertab'                        " tab补全,使用vim内置方法
 
 "let g:SuperTabDefaultCompletionType = "<c-n>"   " 从上到下顺序
 "let g:SuperTabContextDefaultCompletionType = "<c-n>"
 
 " ----------------------------------------------------------------------------
-"                           补全插件2
+"               - 补全插件2 -
 "if ( version >= 800 )
 "	Plug 'maralla/completor.vim'
 "endif
 
 " ----------------------------------------------------------------------------
-"                           补全插件3
+"               - 补全插件3 -
 Plug 'lifepillar/vim-mucomplete'
 set completeopt+=menuone
 set completeopt+=noselect
 
 
 " ----------------------------------------------------------------------------
-"                           其他补全插件
+"               - 其他补全插件 -
 "Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }    " 需要额外的二进制包编译
 
 "Plug 'Shougo/neocomplete.vim'                  " 需要+lua
@@ -310,7 +347,7 @@ set completeopt+=noselect
 "Plug 'roxma/vim-hug-neovim-rpc'
 
 " ----------------------------------------------------------------------------
-"                           代码片段
+"               - 代码片段 -
 "Plug 'SirVer/ultisnips'
 "Plug 'honza/vim-snippets'                    " 其他人代码片段
 
@@ -337,7 +374,7 @@ set completeopt+=noselect
 "let g:UltiSnipsSnippetDirectories=["UltiSnips",SnippetPath]
 
 " ----------------------------------------------------------------------------
-"                           对齐插件
+"               - 对齐插件 -
 Plug 'junegunn/vim-easy-align'
 
 " 参考链接 https://github.com/junegunn/vim-easy-align
@@ -345,7 +382,7 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " ----------------------------------------------------------------------------
-"                           多光标编辑
+"               - 多光标编辑 -
 Plug 'terryma/vim-multiple-cursors'
 
 let g:multi_cursor_use_default_mapping=1        " 0禁用默认键绑定，后面单独配置
@@ -359,7 +396,7 @@ let g:multi_cursor_use_default_mapping=1        " 0禁用默认键绑定，后�
 let g:multi_cursor_exit_from_insert_mode=1     " 默认1，若置0，退出insert模式后，不清除选中
 
 " ----------------------------------------------------------------------------
-"                           匹配符号增强插件
+"               - 匹配符号增强插件 -
 Plug 'tpope/vim-surround'
 
 " 文档 https://github.com/tpope/vim-surround
@@ -372,11 +409,11 @@ Plug 'tpope/vim-surround'
 "       VS + 字符串                             " 行模式，高亮部分的行前和行后添加字符串
 
 " ----------------------------------------------------------------------------
-"                           查找增强
+"               - 查找增强 -
 "Plug 'easymotion/vim-easymotion'               " 和<Leader>冲突
 
 " ----------------------------------------------------------------------------
-"                           文件查找插件
+"               - 文件查找插件 -
 if g:islinux
     Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
 else
@@ -390,7 +427,7 @@ endif
 " <C-C>/q                   " 输入模式退出查找/选择模式退出查找
 
 " ----------------------------------------------------------------------------
-"                           撤销目录树，手动 :UndotreeToggle
+"               - 撤销目录树，手动 :UndotreeToggle -
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 
 " 显示样式，（tree，diff）：1左上，左下，2左上，底部，3右上，右下，4右上，底部
@@ -406,9 +443,9 @@ endif
 nnoremap <F5> :UndotreeToggle<cr>
 
 
-"                           < 功能/代码增强插件 >
+"               < 功能/代码增强插件 >
 " ----------------------------------------------------------------------------
-"                           语法检查插件
+"               - 语法检查插件 -
 if ( version < 800 )
     Plug 'scrooloose/syntastic'
 
@@ -428,7 +465,7 @@ else
 endif
 
 " ----------------------------------------------------------------------------
-"                           行尾空格高亮
+"               - 行尾空格高亮 -
 Plug 'ntpeters/vim-better-whitespace'
 
 let g:better_whitespace_enabled=1               " 高亮行尾空格
@@ -445,7 +482,7 @@ nnoremap [w :PrevTrailingWhitespace<CR>
 " <Leader>s<motion>                             " 根据<motion>清除，如<Leader>sip清除当前段落行尾空格
 
 " ----------------------------------------------------------------------------
-"                           目录树
+"               - 目录树 -
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 
 nmap <F2> :NERDTreeToggle<CR>                   " 常规模式下输入 F2 调用插件
@@ -455,6 +492,8 @@ let NERDTreeShowHidden = 1
 let g:nerdtree_tabs_open_on_console_startup = 1
 let g:nerdtree_tabs_focus_on_files = 1
 
+"let g:NERDTreeWinSize = 25 "设定 NERDTree 视窗大小
+"let NERDTreeShowBookmarks=1  " 开启Nerdtree时自动显示Bookmarks
 let g:NERDTreeIndicatorMapCustom = {
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
@@ -468,8 +507,13 @@ let g:NERDTreeIndicatorMapCustom = {
     \ "Unknown"   : "?"
     \ }
 
+"当NERDTree为剩下的唯一窗口时自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+"let NERDTreeIgnore = ['\.pyc$']  " 过滤所有.pyc文件不显示
+
 " ----------------------------------------------------------------------------
-"                           注释插件
+"               - 注释插件 -
 Plug 'scrooloose/nerdcommenter'
 
 " https://github.com/scrooloose/nerdcommenter  快捷键 <Leader>ci或者<Leader>c<space>
@@ -481,24 +525,27 @@ let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
 let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 
-
-call plug#end()
 " ----------------------------------------------------------------------------
+let g:hasPlugDone = 0
+call plug#end()
 
-"                           < 插件安装完毕后配置 >
+"               < 插件安装完毕后配置 >
 set background=dark
-"let g:airline_theme='papercolor'
-if g:isGUI
-    colorscheme PaperColor                           " Gvim配色方案
+if g:hasPlugDone
+    if g:isGUI
+        colorscheme PaperColor                  " Gvim配色方案
+    else
+        colorscheme PaperColor                  " 终端配色方案
+    endif
 else
-    colorscheme PaperColor                           " 终端配色方案
+    colorscheme default
 endif
 
 
 
 
 " ============================================================================
-"                     << windows 下解决 Quickfix 乱码问题 >>
+"               << windows 下解决 Quickfix 乱码问题 >>
 " ============================================================================
 " windows 默认编码为 cp936，而 Gvim(Vim) 内部编码为 utf-8，所以常常输出为乱码
 " 以下代码可以将编码为 cp936 的输出信息转换为 utf-8 编码，以解决输出乱码问题
@@ -521,7 +568,7 @@ endif
 
 
 " ============================================================================
-"                                   << 其它 >>
+"               << 其它 >>
 " ============================================================================
 " 注：上面配置中的"<Leader>"在本软件中设置为"\"键（引号里的反斜杠），如<Leader>t
 " 指在常规模式下按"\"键加"t"键，这里不是同时按，而是先按"\"键后按"t"键，间隔在一
@@ -531,7 +578,7 @@ endif
 
 
 " ============================================================================
-"                                   << 自定义函数 >>
+"               << 自定义函数 >>
 " ============================================================================
 
 function GetLocalTime(format)
