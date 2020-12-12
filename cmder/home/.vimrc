@@ -119,7 +119,8 @@ set foldenable                                  " 启用折叠
 set foldlevel=99                                " 默认不折叠
 set foldmethod=indent                           " indent 折叠方式
 "set foldmethod=marker                          " marker 折叠方式
-nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>  " 用空格键来开关折叠
+" 用空格键来开关折叠
+nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
 
 " 搜索高亮
 set hlsearch                                    " 高亮搜索
@@ -134,16 +135,17 @@ au BufRead,BufNewFile,BufEnter * cd %:p:h       " 自动切换目录为当前编
 " 80列提示
 "au BufWinEnter * let w:m2=matchadd('Underlined', '\%>' . 80 . 'v.\+', -1)
 
-" 行尾空格处理
-nmap cS :%s/\s\+$//g<CR>:noh<CR>                " 常规模式下输入 cS 清除行尾空格
-nmap cM :%s/\r$//g<CR>:noh<CR>                  " 常规模式下输入 cM 清除行尾 ^M 符号
+" ----------------------------------------------------------------------------
+"               - 自定义快捷键，避免插件覆盖 -
+" 行尾空格处理，常规模式下输入 cS 清除行尾空格，输入 cM 清除行尾 ^M 符号
+nmap cS :%s/\s\+$//g<CR>:noh<CR>
+nmap cM :%s/\r$//g<CR>:noh<CR>
 
 " 插入模式下光标移动
 inoremap <a-k> <Up>
 inoremap <a-j> <Down>
 inoremap <a-h> <Left>
 inoremap <a-l> <Right>
-
 
 "               < 界面配置 >
 set shortmess=atI                               " 去掉欢迎界面
@@ -169,7 +171,8 @@ if g:isGUI
     set guioptions-=T
     set guioptions-=r
     set guioptions-=L
-    map <silent> <c-F11> :if &guioptions =~# 'm' <Bar>
+    map <silent> <c-F11> :
+    \if &guioptions =~# 'm' <Bar>
         \set guioptions-=m <Bar>
         \set guioptions-=T <Bar>
         \set guioptions-=r <Bar>
@@ -204,27 +207,20 @@ endif
 " ============================================================================
 "               << 插件配置 >>
 " ============================================================================
-"               < vim-plug 插件管理工具 >
-" 安装方法，将plugin.vim文件下载并保存到autoload/
-" curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-" 或者：
-" git clone https://github.com/junegunn/vim-plug.git .vim/autoload
-" 如果想在 windows 安装就必需先安装 "git for window"，可查阅网上资料
-
-
 "               < 插件安装目录 >
+" |     |配置路径       |配置文件                   |插件路径               |
+" |vim  |~/.vim         |~/.vimrc                   |~/.vim/packages        |
+" |nvim |~/.comfig/nvim |~/.config/nvim/init.vim    |~/.config/nvim/packages|
 if g:islinux
-" vim的配置路径是~/.vim，配置文件是~/.vimrc，插件路径是~/.vim/packages
-" nvim的配置路径是~/.config/nvim，配置文件是~/.config/nvim/init.vim，插件路径是~/.config/nvim/packages
     if has("nvim")
         " 需要手动链接vim的配置
         "ln -s ~/.vim .config/nvim
         "ln -s ~/.vimrc .config/nvim/init.vim
-        let g:vim_current_editor = "nvim"
+        let g:vim_config_path = "~/.comfig/nvim"
         let g:vim_plugin_path="~/.config/nvim/autoload/plug.vim"
         let g:vim_plugin_install_path="~/.config/nvim/packages"
     else
-        let g:vim_current_editor = "vim"
+        let g:vim_config_path = "~/.vim"
         let g:vim_plugin_path="~/.vim/autoload/plug.vim"
         let g:vim_plugin_install_path="~/.vim/packages"
         if !expand("~/.vim/packages")
@@ -235,11 +231,11 @@ if g:islinux
     let vimplug_exists=expand(g:vim_plugin_path)
     set rtp+=g:vim_plugin_install_path
 else
-    "set rtp+=$VIM/vimfiles/
+    let g:vim_config_path = "$VIM/vimfiles"
     let g:vim_plugin_install_path='$VIM/vimfiles/packages'
 endif
 
-" 启动时自动安装插件：http://vim-bootstrap.com/
+" 启动时自动安装插件：http://vim-bootstrap.com/，需要curl和git
 if has('win32')&&!has('win64')
   let curl_exists=expand('C:\Windows\Sysnative\curl.exe')
 else
@@ -269,7 +265,7 @@ Plug 'mhinz/vim-startify'
 " ----------------------------------------------------------------------------
 "               - 代码配色方案 -
 "Plug 'mhinz/vim-janah'
-"Plug 'NLKNguyen/papercolor-theme'
+Plug 'NLKNguyen/papercolor-theme'
 
 " ----------------------------------------------------------------------------
 "               - 彩虹括号增强版，手动 :RainbowToggle -
@@ -281,8 +277,8 @@ let g:rainbow_active = 1
 "               - 缩进显示,暂时没找到好的 -
 "Plug 'Yggdroot/indentLine'
 
-"let g:indentLine_setColors = 0                  " 0设置竖线背景为灰色
-"let g:indentLine_char = '┆'                     " ¦, ┆, │, ⎸, or ▏
+""let g:indentLine_setColors = 0                  " 0设置竖线背景为灰色
+"let g:indentLine_char = '¦'                     " ¦, ┆, │, ⎸, or ▏
 "let g:indentLine_leadingSpaceEnabled = 1
 "let g:indentLine_leadingSpaceChar = '.'
 
@@ -291,21 +287,18 @@ let g:rainbow_active = 1
 
 " ----------------------------------------------------------------------------
 "               - 状态栏/标签栏增强插件 -
-Plug 'vim-airline/vim-airline'
-
-" Tab
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-" statusline
-"let g:airline#extensions#whitespace#checks = [ 'indent', 'trailing', 'long', 'mixed-indent-file' ]
-let g:airline#extensions#whitespace#checks = [ 'indent', 'long', 'mixed-indent-file' ]
-"let g:airline_powerline_fonts = 1
-"let g:airline#extensions#wordcount#format = '%d wd'
-let g:airline#extensions#wordcount#enabled = 0  " 是否显示单词统计，按空格，tab，换行分割，不准确
-"let g:airline#extensions#wordcount#filetypes = ''
-let g:airline_section_z = '%3p%%/%L %l:%3c[%4B]'
+Plug 'itchyny/lightline.vim'
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'right': [ [ 'lineinfo' ],
+      \              [ 'percent' ],
+      \              [ 'fileformat', 'fileencoding', 'filetype', 'charvaluehex' ] ]
+      \ },
+      \ 'component': {
+      \   'charvaluehex': '0x%4B'
+      \ },
+      \ }
 
 " ----------------------------------------------------------------------------
 "               - 字体,需要安装，要求不高就不要了 -
@@ -314,6 +307,18 @@ let g:airline_section_z = '%3p%%/%L %l:%3c[%4B]'
 " ----------------------------------------------------------------------------
 "               - 代码状态插件 -
 Plug 'airblade/vim-gitgutter'
+" :GitGutterToggle
+" 快捷键：
+" ]c            " 下一处变动块
+" [c            " 上一处变动块
+" <Leader>hp    " 显示变动块
+" <Leader>hs    " stage 变动块
+" <Leader>hu    " 撤销变动块
+"function! GitStatus()
+"  let [a,m,r] = GitGutterGetHunkSummary()
+"  return printf('+%d ~%d -%d', a, m, r)
+"endfunction
+"set statusline+=%{GitStatus()}
 
 "               < 编辑增强插件 >
 " ----------------------------------------------------------------------------
@@ -331,9 +336,9 @@ Plug 'airblade/vim-gitgutter'
 
 " ----------------------------------------------------------------------------
 "               - 补全插件3 -
-Plug 'lifepillar/vim-mucomplete'
-set completeopt+=menuone
-set completeopt+=noselect
+"Plug 'lifepillar/vim-mucomplete'
+"set completeopt+=menuone
+"set completeopt+=noselect
 
 
 " ----------------------------------------------------------------------------
@@ -383,30 +388,19 @@ nmap ga <Plug>(EasyAlign)
 
 " ----------------------------------------------------------------------------
 "               - 多光标编辑 -
-Plug 'terryma/vim-multiple-cursors'
-
-let g:multi_cursor_use_default_mapping=1        " 0禁用默认键绑定，后面单独配置
-" 默认键绑定
-"let g:multi_cursor_start_key='<F6>'             " 进入多光标编辑，默认为next快捷键"
-"let g:multi_cursor_next_key='<C-n>'
-"let g:multi_cursor_prev_key='<C-p>'
-"let g:multi_cursor_skip_key='<C-x>'
-"let g:multi_cursor_quit_key='<Esc>'
-" 其他配置 https://github.com/terryma/vim-multiple-cursors
-let g:multi_cursor_exit_from_insert_mode=1     " 默认1，若置0，退出insert模式后，不清除选中
+Plug 'mg979/vim-visual-multi'
 
 " ----------------------------------------------------------------------------
 "               - 匹配符号增强插件 -
-Plug 'tpope/vim-surround'
+Plug 'machakann/vim-sandwich'
 
-" 文档 https://github.com/tpope/vim-surround
+" 文档 https://github.com/machakann/vim-sandwich
 " 命令格式：
-"       cs + 当前符号 + 目标符号/标签
-"       cst + 目标符号          " 将标签替换为目标符号
-"       ds + 符号               " 清除匹配符号
-"       ysiw + 0个或者1个空格 + 符号/标签       " 对单词添加匹配符号/标签，注意左符号自带一个空格，右符号不带空格，但可添加
-"       yss + 0个或者1个空格 + 符号/标签        " 类似ysiw，但是对整行
-"       VS + 字符串                             " 行模式，高亮部分的行前和行后添加字符串
+"   sa{motion/textobject}{addition}         " 添加
+"   sdb / sd{deletion}                      " 删除
+"   srb{addition} / sr{deletion}{addition}  " 替换
+" motion - ib,is:只包括文字，ab,as:包括边界
+" sdb和srb默认是空格，最好明确deletion
 
 " ----------------------------------------------------------------------------
 "               - 查找增强 -
@@ -414,11 +408,11 @@ Plug 'tpope/vim-surround'
 
 " ----------------------------------------------------------------------------
 "               - 文件查找插件 -
-if g:islinux
-    Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
-else
-    Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
-endif
+"if g:islinux
+"    Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
+"else
+"    Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
+"endif
 
 " https://github.com/Yggdroot/LeaderF
 " <leader>f                 " 查找文件
@@ -426,43 +420,27 @@ endif
 " <F1>                      " 选择模式帮助
 " <C-C>/q                   " 输入模式退出查找/选择模式退出查找
 
-" ----------------------------------------------------------------------------
-"               - 撤销目录树，手动 :UndotreeToggle -
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-
-" 显示样式，（tree，diff）：1左上，左下，2左上，底部，3右上，右下，4右上，底部
-let g:undotree_WindowLayout = 3
-if has("persistent_undo")
-    if g:islinux
-        set undodir=~/.vim/undodir/
-    else
-        set undodir=$VIM/vimfiles/undodir/
-    endif
-    set undofile
-endif
-nnoremap <F5> :UndotreeToggle<cr>
-
 
 "               < 功能/代码增强插件 >
 " ----------------------------------------------------------------------------
 "               - 语法检查插件 -
-if ( version < 800 )
-    Plug 'scrooloose/syntastic'
+"if ( version < 800 )
+"    Plug 'scrooloose/syntastic'
 
-    set statusline+=%#warningmsg#
-    set statusline+=%{SyntasticStatuslineFlag()}
-    set statusline+=%*
-    let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_auto_loc_list = 1
-    let g:syntastic_check_on_open = 1
-    let g:syntastic_check_on_wq = 0
-else
-    Plug 'w0rp/ale'
+"    set statusline+=%#warningmsg#
+"    set statusline+=%{SyntasticStatuslineFlag()}
+"    set statusline+=%*
+"    let g:syntastic_always_populate_loc_list = 1
+"    let g:syntastic_auto_loc_list = 1
+"    let g:syntastic_check_on_open = 1
+"    let g:syntastic_check_on_wq = 0
+"else
+"    Plug 'w0rp/ale'
 
-    " 文档 https://github.com/w0rp/ale
-    let g:ale_completion_enabled = 1
-    "let g:airline#extensions#ale#enabled = 1
-endif
+"    " 文档 https://github.com/w0rp/ale
+"    let g:ale_completion_enabled = 1
+"    "let g:airline#extensions#ale#enabled = 1
+"endif
 
 " ----------------------------------------------------------------------------
 "               - 行尾空格高亮 -
@@ -473,8 +451,9 @@ let g:strip_whitespace_on_save=0                " 保存时去除行尾空格，
 let g:strip_whitelines_at_eof=1                 " 去除文件末尾空格
 let g:show_spaces_that_precede_tabs=1           " 高亮tab前和tab内部的空格
 let g:better_whitespace_skip_empty_lines=0      " 置1忽略纯空格的行
+"let g:strip_whitespace_confirm=1                " 删除前确认
 " 默认下列文件格式对该插件屏蔽，若不注释则所有格式都开启
-"let g:better_whitespace_filetypes_blacklist=['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
+let g:better_whitespace_filetypes_blacklist=['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown']
 " 在行尾空格快速移动
 nnoremap ]w :NextTrailingWhitespace<CR>
 nnoremap [w :PrevTrailingWhitespace<CR>
@@ -482,10 +461,26 @@ nnoremap [w :PrevTrailingWhitespace<CR>
 " <Leader>s<motion>                             " 根据<motion>清除，如<Leader>sip清除当前段落行尾空格
 
 " ----------------------------------------------------------------------------
+"               - 撤销目录树，手动 :UndotreeToggle -
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+
+" 显示样式，（tree，diff）：1左上，左下，2左上，底部，3右上，右下，4右上，底部
+let g:undotree_WindowLayout = 3
+if has("persistent_undo")
+    let undodir_path=g:vim_config_path."/undodir/"
+    set undodir=undodir_path
+    if !expand(undodir_path)
+        silent exec "!mkdir -p " . undodir_path
+    endif
+    set undofile
+endif
+nnoremap <F3> :UndotreeToggle<CR>
+
+" ----------------------------------------------------------------------------
 "               - 目录树 -
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 
-nmap <F2> :NERDTreeToggle<CR>                   " 常规模式下输入 F2 调用插件
+nmap <F2> :NERDTreeToggle<CR>
 let NERDTreeMinimalUI = 1
 let NERDTreeShowHidden = 1
 
@@ -514,22 +509,17 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 
 " ----------------------------------------------------------------------------
 "               - 注释插件 -
-Plug 'scrooloose/nerdcommenter'
+Plug 'tomtom/tcomment_vim'
 
-" https://github.com/scrooloose/nerdcommenter  快捷键 <Leader>ci或者<Leader>c<space>
-let g:NERDSpaceDelims = 1
-let g:NERDCompactSexyComs = 1
-let g:NERDDefaultAlign = 'left'
-let g:NERDAltDelims_java = 1
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
-let g:NERDCommentEmptyLines = 1
-let g:NERDTrimTrailingWhitespace = 1
+" https://github.com/tomtom/tcomment_vim  快捷键 gcc
 
 " ----------------------------------------------------------------------------
 let g:hasPlugDone = 0
 call plug#end()
 
 "               < 插件安装完毕后配置 >
+" ----------------------------------------------------------------------------
+"               - 颜色主题 -
 set background=dark
 if g:hasPlugDone
     if g:isGUI
