@@ -291,14 +291,14 @@ let g:rainbow_active = 1
 "               - 状态栏/标签栏增强插件 -
 Plug 'itchyny/lightline.vim'
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'PaperColor',
       \ 'active': {
       \   'right': [ [ 'lineinfo' ],
-      \              [ 'percent' ],
       \              [ 'fileformat', 'fileencoding', 'filetype', 'charvaluehex' ] ]
       \ },
       \ 'component': {
-      \   'charvaluehex': '0x%4B'
+      \   'lineinfo': '%3p%%/%L',
+      \   'charvaluehex': '%l:%c[0x%04B]'
       \ },
       \ }
 
