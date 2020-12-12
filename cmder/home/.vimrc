@@ -108,7 +108,7 @@ endif
 " 缩进
 filetype plugin indent on                       " 启用缩进
 set smartindent                                 " 启用智能对齐方式
-set expandtab                                   " 将Tab键转换为空格
+"set expandtab                                   " 将Tab键转换为空格
 set tabstop=4                                   " 设置Tab键的宽度
 set shiftwidth=4                                " 换行时自动缩进4个空格
 set smarttab                                    " 指定按一次backspace就删除shiftwidth宽度的空格
@@ -120,7 +120,8 @@ set foldlevel=99                                " 默认不折叠
 set foldmethod=indent                           " indent 折叠方式
 "set foldmethod=marker                          " marker 折叠方式
 " 用空格键来开关折叠
-nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+"nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+nmap <space> <c-f>
 
 " 搜索高亮
 set hlsearch                                    " 高亮搜索
@@ -189,10 +190,11 @@ endif
 "               < 其它配置 >
 "set guifont=YaHei_Consolas_Hybrid:h10          " 设置字体:字号（字体名称空格用下划线代替）
 "set guifont=Consolas:h12
-"set guifontwide=Consolas:h12 
+"set guifontwide=Consolas:h12
 "set nowrap                                     " 设置不自动换行
 "set listchars=tab:>-,trail:~
-"set list
+set listchars=tab:∙\ ,trail:◊,precedes:«,extends:»
+set list
 set writebackup                                 " 保存文件前建立备份，保存成功后删除该备份
 set nobackup                                    " 设置无备份文件
 set noswapfile                                  " 设置无临时文件
@@ -302,7 +304,7 @@ let g:lightline = {
 
 " ----------------------------------------------------------------------------
 "               - 字体,需要安装，要求不高就不要了 -
-"Plug 'powerline/fonts'
+"Plug 'ryanoasis/vim-devicons'
 
 " ----------------------------------------------------------------------------
 "               - 代码状态插件 -
