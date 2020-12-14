@@ -143,10 +143,10 @@ nmap cS :%s/\s\+$//g<CR>:noh<CR>
 nmap cM :%s/\r$//g<CR>:noh<CR>
 
 " 插入模式下光标移动
-inoremap <a-k> <Up>
-inoremap <a-j> <Down>
-inoremap <a-h> <Left>
-inoremap <a-l> <Right>
+"inoremap <a-k> <Up>
+"inoremap <a-j> <Down>
+"inoremap <a-h> <Left>
+"inoremap <a-l> <Right>
 
 "               < 界面配置 >
 set shortmess=atI                               " 去掉欢迎界面
@@ -154,7 +154,7 @@ set number                                      " 显示行号
 set laststatus=2                                " 启用状态栏信息
 set cmdheight=2                                 " 设置命令行的高度为2，默认为1
 set showcmd                                     " 显示命令
-set cursorline                                  " 突出显示当前行
+"set cursorline                                  " 突出显示当前行
 
 set mouse=a                                     " 在任何模式下启用鼠标
 set t_Co=256                                    " 在终端启用256色
@@ -193,10 +193,11 @@ endif
 "set guifontwide=Consolas:h12
 "set nowrap                                     " 设置不自动换行
 "set listchars=tab:>-,trail:~
-set listchars=tab:∙\ ,trail:◊,precedes:«,extends:»
+set listchars=tab:∙\ ,trail:≡,precedes:«,extends:»
 set list
-set writebackup                                 " 保存文件前建立备份，保存成功后删除该备份
+"set writebackup                                 " 保存文件前建立备份，保存成功后删除该备份
 set nobackup                                    " 设置无备份文件
+set nowritebackup
 set noswapfile                                  " 设置无临时文件
 set vb t_vb=                                    " 关闭提示音
 " 和系统剪切板交互
@@ -332,9 +333,19 @@ Plug 'airblade/vim-gitgutter'
 
 " ----------------------------------------------------------------------------
 "               - 补全插件2 -
-"if ( version >= 800 )
-"	Plug 'maralla/completor.vim'
-"endif
+"Plug 'prabirshrestha/vim-lsp'
+"Plug 'mattn/vim-lsp-settings'
+"Plug 'prabirshrestha/asyncomplete.vim'
+"Plug 'prabirshrestha/asyncomplete-lsp.vim'
+
+""let g:asyncomplete_auto_completeopt = 0
+"autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+"inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"" 1. 回车取消，2. 回车换行
+"inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+""inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() . "\<cr>" : "\<cr>"
+
 
 " ----------------------------------------------------------------------------
 "               - 补全插件3 -
@@ -345,13 +356,40 @@ Plug 'airblade/vim-gitgutter'
 
 " ----------------------------------------------------------------------------
 "               - 其他补全插件 -
-"Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }    " 需要额外的二进制包编译
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-"Plug 'Shougo/neocomplete.vim'                  " 需要+lua
+"let g:coc_node_path = '/path/to/node'
+set hidden
+set shortmess+=c
+set updatetime=300
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-"Plug 'Shougo/deoplete.nvim'                     " 需要+python3和version>=8.0，neocomplete的新版
-"Plug 'roxma/nvim-yarp'
-"Plug 'roxma/vim-hug-neovim-rpc'
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
 
 " ----------------------------------------------------------------------------
 "               - 代码片段 -
@@ -407,11 +445,12 @@ Plug 'machakann/vim-sandwich'
 " ----------------------------------------------------------------------------
 "               - 查找增强 -
 "Plug 'easymotion/vim-easymotion'               " 和<Leader>冲突
+"Plug 'andymass/vim-matchup'
 
 " ----------------------------------------------------------------------------
 "               - 文件查找插件 -
 "if g:islinux
-"    Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
+"    Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 "else
 "    Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
 "endif
@@ -424,26 +463,6 @@ Plug 'machakann/vim-sandwich'
 
 
 "               < 功能/代码增强插件 >
-" ----------------------------------------------------------------------------
-"               - 语法检查插件 -
-"if ( version < 800 )
-"    Plug 'scrooloose/syntastic'
-
-"    set statusline+=%#warningmsg#
-"    set statusline+=%{SyntasticStatuslineFlag()}
-"    set statusline+=%*
-"    let g:syntastic_always_populate_loc_list = 1
-"    let g:syntastic_auto_loc_list = 1
-"    let g:syntastic_check_on_open = 1
-"    let g:syntastic_check_on_wq = 0
-"else
-"    Plug 'w0rp/ale'
-
-"    " 文档 https://github.com/w0rp/ale
-"    let g:ale_completion_enabled = 1
-"    "let g:airline#extensions#ale#enabled = 1
-"endif
-
 " ----------------------------------------------------------------------------
 "               - 行尾空格高亮 -
 Plug 'ntpeters/vim-better-whitespace'
