@@ -61,10 +61,16 @@ if g:islinux
         endif
     else
         " Source a global configuration file if available
-        if filereadable("/etc/vim/vimrc")
-            source /etc/vim/vimrc
-        elseif filereadable("/etc/vimrc")
-            source /etc/vimrc
+        if has("nvim")
+            if filereadable("/usr/local/share/nvim/syntax/syntax.vim")
+                source /usr/local/share/nvim/syntax/syntax.vim
+            endif
+        else
+            if filereadable("/etc/vim/vimrc")
+                source /etc/vim/vimrc
+            elseif filereadable("/etc/vimrc")
+                source /etc/vimrc
+            endif
         endif
     endif
 endif
@@ -113,6 +119,13 @@ set tabstop=4                                   " 设置Tab键的宽度
 set shiftwidth=4                                " 换行时自动缩进4个空格
 set smarttab                                    " 指定按一次backspace就删除shiftwidth宽度的空格
 set backspace=2                                 " 设置退格键可用，和 :set backspace=indent,eol,start相同
+" 根据文件类型设置缩进
+autocmd Filetype html setlocal ts=2 sw=2 expandtab
+autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
+autocmd Filetype python setlocal ts=4 sw=4 expandtab
+autocmd Filetype javascript setlocal ts=4 sw=4 sts=0 expandtab
+autocmd Filetype coffeescript setlocal ts=4 sw=4 sts=0 expandtab
+
 
 " 折叠
 set foldenable                                  " 启用折叠
@@ -193,7 +206,7 @@ endif
 "set guifontwide=Consolas:h12
 "set nowrap                                     " 设置不自动换行
 "set listchars=tab:>-,trail:~
-set listchars=tab:∙\ ,trail:≡,precedes:«,extends:»
+set listchars=tab:∙\ ,trail:º,precedes:«,extends:»
 set list
 "set writebackup                                 " 保存文件前建立备份，保存成功后删除该备份
 set nobackup                                    " 设置无备份文件
@@ -213,13 +226,13 @@ endif
 "               < 插件安装目录 >
 " |     |配置路径       |配置文件                   |插件路径               |
 " |vim  |~/.vim         |~/.vimrc                   |~/.vim/packages        |
-" |nvim |~/.comfig/nvim |~/.config/nvim/init.vim    |~/.config/nvim/packages|
+" |nvim |~/.config/nvim |~/.config/nvim/init.vim    |~/.config/nvim/packages|
 if g:islinux
     if has("nvim")
         " 需要手动链接vim的配置
         "ln -s ~/.vim .config/nvim
         "ln -s ~/.vimrc .config/nvim/init.vim
-        let g:vim_config_path = "~/.comfig/nvim"
+        let g:vim_config_path = "~/.config/nvim"
         let g:vim_plugin_path="~/.config/nvim/autoload/plug.vim"
         let g:vim_plugin_install_path="~/.config/nvim/packages"
     else
