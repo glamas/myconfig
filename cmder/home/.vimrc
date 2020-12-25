@@ -2,12 +2,12 @@
 "               << 判断操作系统是 Windows 还是 Linux 和判断是终端还是 Gvim >>
 " ============================================================================
 "               < 判断操作系统是否是 Windows 还是 Linux >
-let g:iswindows = 0
-let g:islinux = 0
+let g:isWindows = 0
+let g:isLinux = 0
 if(has("win32") || has("win64") || has("win95") || has("win16"))
-    let g:iswindows = 1
+    let g:isWindows = 1
 else
-    let g:islinux = 1
+    let g:isLinux = 1
 endif
 
 
@@ -18,11 +18,12 @@ else
     let g:isGUI = 0
 endif
 
+
 " ============================================================================
 "               << 软件默认配置 >>
 " ============================================================================
 "               < Windows Gvim 默认配置>
-if (g:iswindows && g:isGUI)
+if (g:isWindows && g:isGUI)
     source $VIMRUNTIME/vimrc_example.vim
     source $VIMRUNTIME/mswin.vim
     behave mswin
@@ -53,8 +54,9 @@ if (g:iswindows && g:isGUI)
     endfunction
 endif
 
+
 "               < Linux Gvim/Vim 默认配置>
-if g:islinux
+if g:isLinux
     if g:isGUI
         if filereadable("/etc/vim/gvimrc.local")
             source /etc/vim/gvimrc.local
@@ -74,7 +76,6 @@ if g:islinux
         endif
     endif
 endif
-
 
 
 " ============================================================================
@@ -99,7 +100,7 @@ filetype on                                     " 启用文件类型侦测
 filetype plugin on                              " 针对不同的文件类型加载对应的插件
 
 " 解决乱码
-if (g:iswindows && g:isGUI)
+if (g:isWindows && g:isGUI)
     language messages zh_CN.utf-8               " 解决consle输出乱码
     source $VIMRUNTIME/delmenu.vim              " 解决菜单乱码
     source $VIMRUNTIME/menu.vim
@@ -227,7 +228,10 @@ endif
 " |     |配置路径       |配置文件                   |插件路径               |
 " |vim  |~/.vim         |~/.vimrc                   |~/.vim/packages        |
 " |nvim |~/.config/nvim |~/.config/nvim/init.vim    |~/.config/nvim/packages|
-if g:islinux
+" windows
+" |vim  |$VIMRUNTIME    |$VIMRUNTIME/_vimrc         |$VIMRUNTIME/packages   |
+" |nvim |$VIM           |$VIM/sysinit.vim           |$VIM/packages          |
+if g:isLinux
     if has("nvim")
         " 需要手动链接vim的配置
         "ln -s ~/.vim .config/nvim
@@ -247,8 +251,27 @@ if g:islinux
     let vimplug_exists=expand(g:vim_plugin_path)
     set rtp+=g:vim_plugin_install_path
 else
-    let g:vim_config_path = "$VIM/vimfiles"
-    let g:vim_plugin_install_path='$VIM/vimfiles/packages'
+    if has("nvim")
+        " 重置Windows环境下neovim的shell，vim的默认shell已经是cmd
+        set shell=cmd.exe
+        " 需要复制配置文件到/share/nvim/sysinit.vim
+        let g:vim_config_path=$VIM
+        let g:vim_plugin_path=$VIM . "/autoload/plug.vim"
+        let g:vim_plugin_install_path=$VIM . "/packages"
+        if !expand(g:vim_plugin_install_path)
+            silent exec "!mkdir " . expand(g:vim_plugin_install_path)
+        endif
+    else
+        let g:vim_config_path=$VIMRUNTIME
+        let g:vim_plugin_path=$VIMRUNTIME . "/packages"
+        let g:vim_plugin_install_path=$VIMRUNTIME . "/packages"
+        if !expand(g:vim_plugin_install_path)
+            silent exec "!mkdir -p " . expand(g:vim_plugin_install_path)
+        endif
+    endif
+    let vimplug_exists=expand(g:vim_plugin_path)
+    exec 'set rtp+=' . expand(g:vim_plugin_install_path)
+    exec 'set rtp+=' . expand(g:vim_config_path)
 endif
 
 " 启动时自动安装插件：http://vim-bootstrap.com/，需要curl和git
@@ -422,7 +445,7 @@ endfunction
 "    let g:UltiSnipsUsePythonVersion = 2
 "endif
 " 个人代码片段保存目录
-"if g:islinux
+"if g:isLinux
 "    let SnippetPath=$HOME . '/.vim/ultisnips/'
 "else
 "    let SnippetPath='$VIM/vimfiles/ultisnips/'
@@ -462,7 +485,7 @@ Plug 'machakann/vim-sandwich'
 
 " ----------------------------------------------------------------------------
 "               - 文件查找插件 -
-"if g:islinux
+"if g:isLinux
 "    Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 "else
 "    Plug 'Yggdroot/LeaderF', { 'do': '.\install.bat' }
@@ -501,10 +524,14 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 " 显示样式，（tree，diff）：1左上，左下，2左上，底部，3右上，右下，4右上，底部
 let g:undotree_WindowLayout = 3
 if has("persistent_undo")
-    let undodir_path=g:vim_config_path."/undodir/"
-    set undodir=undodir_path
+    let undodir_path=expand(g:vim_config_path."/undodir/")
+    exec "set undodir=" . undodir_path
     if !expand(undodir_path)
-        silent exec "!mkdir -p " . undodir_path
+        if g:isWindows && has("nvim")
+            silent exec "!mkdir " . undodir_path
+        else
+            silent exec "!mkdir -p " . undodir_path
+        endif
     endif
     set undofile
 endif
@@ -577,7 +604,7 @@ endif
 " 不成功，会造成其中一种语言乱码，输出信息全部为英文的好像不会乱码
 " 如果输出信息为乱码的可以试一下下面的代码，如果不行就还是给它注释掉
 
-" if g:iswindows
+" if g:isWindows
 "     function QfMakeConv()
 "         let qflist = getqflist()
 "         for i in qflist
