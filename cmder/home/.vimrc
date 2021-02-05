@@ -243,7 +243,7 @@ if g:isLinux
         let g:vim_config_path = "~/.vim"
         let g:vim_plugin_path="~/.vim/autoload/plug.vim"
         let g:vim_plugin_install_path="~/.vim/packages"
-        if !expand("~/.vim/packages")
+        if !isdirectory(expand("~/.vim/packages"))
             silent exec "!mkdir -p ~/.vim"
         endif
     endif
@@ -258,14 +258,14 @@ else
         let g:vim_config_path=$VIM
         let g:vim_plugin_path=$VIM . "/autoload/plug.vim"
         let g:vim_plugin_install_path=$VIM . "/packages"
-        if !expand(g:vim_plugin_install_path)
+        if !isdirectory(expand(g:vim_plugin_install_path))
             silent exec "!mkdir " . expand(g:vim_plugin_install_path)
         endif
     else
         let g:vim_config_path=$VIMRUNTIME
         let g:vim_plugin_path=$VIMRUNTIME . "/packages"
         let g:vim_plugin_install_path=$VIMRUNTIME . "/packages"
-        if !expand(g:vim_plugin_install_path)
+        if !isdirectory(expand(g:vim_plugin_install_path))
             silent exec "!mkdir -p " . expand(g:vim_plugin_install_path)
         endif
     endif
@@ -526,7 +526,7 @@ let g:undotree_WindowLayout = 3
 if has("persistent_undo")
     let undodir_path=expand(g:vim_config_path."/undodir/")
     exec "set undodir=" . undodir_path
-    if !expand(undodir_path)
+    if !isdirectory(expand(undodir_path))
         if g:isWindows && has("nvim")
             silent exec "!mkdir " . undodir_path
         else
@@ -575,7 +575,7 @@ Plug 'tomtom/tcomment_vim'
 " https://github.com/tomtom/tcomment_vim  快捷键 gcc
 
 " ----------------------------------------------------------------------------
-let g:hasPlugDone = 0
+let g:hasPlugDone = 1
 call plug#end()
 
 "               < 插件安装完毕后配置 >
