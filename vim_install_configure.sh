@@ -1,9 +1,15 @@
 
-yum install lua_devel ncurses ncurses-devel perl-devel perl-ExtUtils-Embed ruby ruby-devel
-yum install libXt-devel #如果报缺少X11 header files
+# for centos
+# yum install lua_devel ncurses ncurses-devel perl-devel perl-ExtUtils-Embed ruby ruby-devel
 
-##./configure --prefix=/usr/local \
-CFLAGS="-I/usr/lib64/perl5/CORE/"		#如果报缺少EXTERN.h的错
+#如果报缺少X11 header files
+# yum install libXt-devel
+
+#如果报缺少EXTERN.h的错
+# export CFLAGS="-I/usr/lib64/perl5/CORE/"
+
+#如果提示checking for tgetent()... configure: error: NOT FOUND!
+# export CFLAGS=-fPIC
 
 ./configure  \
 --with-features=huge \
@@ -20,10 +26,10 @@ CFLAGS="-I/usr/lib64/perl5/CORE/"		#如果报缺少EXTERN.h的错
 --enable-largefile \
 --disable-netbeans \
 --with-compiledby="acelee" \
---with-x 
+--with-x
 
 make
-make install
+# make install
 
 
 #--enable-gui=auto 
