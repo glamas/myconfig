@@ -31,6 +31,7 @@
 make
 # make install
 
+# unset CFLAGS
 
 #--enable-gui=auto 
 #--enable-gnome-check 
