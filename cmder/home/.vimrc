@@ -243,8 +243,8 @@ if g:isLinux
         let g:vim_config_path = "~/.vim"
         let g:vim_plugin_path="~/.vim/autoload/plug.vim"
         let g:vim_plugin_install_path="~/.vim/packages"
-        if !isdirectory(expand("~/.vim/packages"))
-            silent exec "!mkdir -p ~/.vim"
+        if !isdirectory(expand(g:vim_plugin_install_path))
+            silent call mkdir(g:vim_plugin_install_path, "p")
         endif
     endif
 
@@ -258,16 +258,13 @@ else
         let g:vim_config_path=$VIM
         let g:vim_plugin_path=$VIM . "/autoload/plug.vim"
         let g:vim_plugin_install_path=$VIM . "/packages"
-        if !isdirectory(expand(g:vim_plugin_install_path))
-            silent exec "!mkdir " . expand(g:vim_plugin_install_path)
-        endif
     else
         let g:vim_config_path=$VIMRUNTIME
-        let g:vim_plugin_path=$VIMRUNTIME . "/packages"
+        let g:vim_plugin_path=$VIMRUNTIME . "/autoload/plug.vim"
         let g:vim_plugin_install_path=$VIMRUNTIME . "/packages"
-        if !isdirectory(expand(g:vim_plugin_install_path))
-            silent exec "!mkdir -p " . expand(g:vim_plugin_install_path)
-        endif
+    endif
+    if !isdirectory(expand(g:vim_plugin_install_path))
+        silent call mkdir(g:vim_plugin_install_path, "p")
     endif
     let vimplug_exists=expand(g:vim_plugin_path)
     exec 'set rtp+=' . expand(g:vim_plugin_install_path)
@@ -289,7 +286,6 @@ if !filereadable(vimplug_exists)
   echo "Installing Vim-Plug..."
   echo ""
   silent exec "!"curl_exists" -fLo " . shellescape(vimplug_exists) . " --create-dirs https://ghproxy.com/https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-  let g:not_finish_vimplug = "yes"
 
   autocmd VimEnter * PlugInstall
 endif
@@ -395,6 +391,10 @@ Plug 'airblade/vim-gitgutter'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "let g:coc_node_path = '/path/to/node'
+if (g:isWindows && !g:isGUI && $MSYSTEM!="")
+    let g:coc_data_home = $HOME."/.config/coc"
+    let g:coc_config_home = $HOME.'/.vim'
+endif
 set hidden
 set shortmess+=c
 set updatetime=300
@@ -527,11 +527,7 @@ if has("persistent_undo")
     let undodir_path=expand(g:vim_config_path."/undodir/")
     exec "set undodir=" . undodir_path
     if !isdirectory(expand(undodir_path))
-        if g:isWindows && has("nvim")
-            silent exec "!mkdir " . undodir_path
-        else
-            silent exec "!mkdir -p " . undodir_path
-        endif
+        silent call mkdir(undodir_path, "p")
     endif
     set undofile
 endif
