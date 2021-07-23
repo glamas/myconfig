@@ -1,25 +1,47 @@
-# use this file to run your own startup commands for msys2 bash'
+# cmder/comenu task
+# msys2
+# set CHERE_INVOKING=1 & set MSYS2_PATH_TYPE=inherit & set "msys64bin=D:\Portable\msys64\usr\bin" & set "PATH=%PATH%;%msys64bin%" & %ConEmuBaseDirShort%\conemu-msys2-64.exe -new_console:p %msys64bin%\bash.exe --login -i
+# git
+# set "PATH=D:\Portable\Git\usr\bin;%PATH%" & D:\Portable\Git\git-cmd.exe --no-cd --command=%ConEmuBaseDirShort%\conemu-msys2-64.exe /usr/bin/bash.exe -l -i -new_console:p
 
-# To add a new vendor to the path, do something like:
-# export PATH=${CMDER_ROOT}/vendor/whatever:${PATH}
+function cascade_add_path {
+	if [[ $1 == "" ]];then
+		return
+	fi
+	path=$(cygpath -u $1)
+	for file in `ls ${1}`;
+	do
+		# add top/subdir/{bin, sbin}
+		if [ -d "${path}/$file" ]; then
+			PATH=$PATH:${path}/$file
+			if [ -d "${path}/$file/bin" ]; then
+				PATH=$PATH:${path}/${file}/bin
+			fi
+		fi
+	done
+	# add top/{bin,sbin}
+	if [ -d "${path}/bin" ]; then
+		PATH=$PATH:${path}/bin
+	fi
+	if [ -d "${path}/sbin" ]; then
+		PATH=$PATH:${path}/sbin
+	fi
+	# add top path
+	export PATH=$PATH:${path}
+}
 
-# Uncomment this to have the ssh agent load with the first bash terminal
-# . "${CMDER_ROOT}/vendor/lib/start-ssh-agent.sh"
-
+# ENV var
 HOME="${CMDER_ROOT}/home"
 HISTFILE="${HOME}/.bash_history"
-#PATH=${PATH}:${CMDER_ROOT}/bin/python37
-. $HOME/.bashrc
 
-export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node
-# add $CMDER_ROOT/bin to path
-for file in `ls ${CMDER_ROOT}/bin`;
+# PATH
+# add manual path
+CUSTOME_PATH=(
+"${CMDER_ROOT}/bin"
+)
+for ((i=0; i<${#CUSTOME_PATH[*]}; i++))
 do
-	if [ -d "${CMDER_ROOT}/bin/$file" ]; then
-		PATH=${CMDER_ROOT}/bin/$file:$PATH
-		if [ -d "${CMDER_ROOT}/bin/$file/bin" ]; then
-			PATH=${CMDER_ROOT}/bin/$file/bin:$PATH
-		fi
-	fi
+	cascade_add_path ${CUSTOME_PATH[i]}
 done
-export PATH=${CMDER_ROOT}/bin:$PATH
+
+echo "done"
