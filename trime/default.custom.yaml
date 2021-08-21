@@ -1,11 +1,12 @@
-# Rime default settings
-# encoding: utf-8
-
+customization:
+  distribution_code_name: Weasel
+  distribution_version: 0.14.3
+  generator: "Rime::SwitcherSettings"
+  modified_time: "Sat Oct 31 18:18:48 2020"
+  rime_version: 1.5.3
 patch:
   schema_list:
-    - schema: luna_pinyin
-    - schema: wubi_pinyin
-
-  "menu/page_size": 7
-  "style/horizontal": false
-  "switches/@0/reset": 1
+    - {schema: clover}
+    - {schema: wubi86_jidian}
+    - {schema: wubi86_jidian_pinyin}
+    - {schema: flypy}

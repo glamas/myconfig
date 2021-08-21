@@ -23,6 +23,9 @@ switches:
     states: [ 漢字, 汉字 ]
   - name: ascii_punct
     states: [ 。，, ．， ]
+  - options: [ _keyboard_.last, _keyboard_use ]
+    reset: 0
+    states: [ 编辑, 返回 ]
 
 engine:
   processors:
