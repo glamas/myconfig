@@ -113,7 +113,7 @@ autocmd Filetype make setlocal noexpandtab
 autocmd Filetype html,htmldjango,css setlocal ts=2 sw=2 expandtab
 autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
 autocmd Filetype python setlocal ts=4 sw=4 expandtab cc=120
-autocmd Filetype c,cpp setlocal ts=4 sw=4 expandtab cc=80
+autocmd Filetype c,cpp setlocal ts=4 sw=4 expandtab cc=80,120
 autocmd Filetype javascript setlocal ts=4 sw=4 sts=0 expandtab
 autocmd Filetype coffeescript setlocal ts=4 sw=4 sts=0 expandtab
 
@@ -177,6 +177,7 @@ set noswapfile                                  " 设置无临时文件
 set t_Co=256                                    " 在终端启用256色
 set mouse=a                                     " 在任何模式下启用鼠标
 set vb t_vb=                                    " 关闭提示音
+"set noimcmdline                                 " 输入法自动切换中文
 " 和系统剪切板交互
 if has("clipboard")
     set clipboard+=unnamed
@@ -204,7 +205,7 @@ let $VIRTUAL_ENV = ""
 " ============================================================================
 "               < 插件安装目录 >
 " | OS        | editor | vim_config_path | vim_config_file         | vim_plugin_install_path |
-" +===========+========+=================+=========================+=========================+
+" +-----------+--------+-----------------+-------------------------+-------------------------+
 " | linux/bsd | vim    | ~/.vim          | ~/.vimrc                | ~/.vim/packages         |
 " |           | nvim   | ~/.config/nvim  | ~/.config/nvim/init.vim | ~/.config/nvim/packages |
 " | windows   | vim    | $VIMRUNTIME     | $VIMRUNTIME/_vimrc      | $VIMRUNTIME/packages    |
@@ -293,8 +294,9 @@ Plug 'ervandew/supertab'                        " tab补全,使用vim内置方�
 Plug 'dhruvasagar/vim-table-mode'               " 表格增强
 "Plug 'lifepillar/vim-mucomplete'
 if has("nvim")
+    Plug 'williamboman/mason.nvim'
+    Plug 'williamboman/mason-lspconfig.nvim'
     Plug 'neovim/nvim-lspconfig'
-    Plug 'williamboman/nvim-lsp-installer'
 else
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
 endif
@@ -324,15 +326,31 @@ if exists('g:plugs["rainbow"]')
 endif
 
 if exists('g:plugs["lightline.vim"]')
+function! StatusLineFileSize()
+    let l:bytes = line2byte('$') + len(getline('$'))
+    let l:sizes = ['B', 'K', 'M', 'G', 'T', 'P']
+    let l:i = 0
+    while l:bytes >= 1024
+        let l:bytes = l:bytes / 1024.0
+        let l:i += 1
+    endwhile
+    return printf('%.1f%s', l:bytes, l:sizes[l:i])
+endfunction
     let g:lightline = {
       \ 'colorscheme': 'PaperColor',
       \ 'active': {
-      \   'right': [ [ 'lineinfo' ],
-      \              [ 'fileformat', 'fileencoding', 'filetype', 'charvaluehex' ] ]
+      \   'right': [ [ 'lineinfo', 'charvaluehex' ],
+      \              [ 'fileformat', 'fileencoding', 'filetype', 'tabinfo' ],
+      \              [ 'filesize' ]
+      \            ]
       \ },
       \ 'component': {
       \   'lineinfo': '%3p%%/%L',
-      \   'charvaluehex': '%l:%c[0x%04B]'
+      \   'charvaluehex': '%l:%c[0x%04B]',
+      \   'tabinfo': '%{(&expandtab)?"space":"tab"}:%{&ts}'
+      \ },
+      \ 'component_function': {
+      \   'filesize': 'StatusLineFileSize'
       \ },
       \ }
 endif
@@ -371,8 +389,9 @@ endif
 
 if exists('g:plugs["vim-table-mode"]')
     " https://github.com/dhruvasagar/vim-table-mode
-    let g:table_mode_corner_corner='+'
-    let g:table_mode_header_fillchar='-'
+    " let g:table_mode_corner_corner='+'
+    " let g:table_mode_header_fillchar='-'
+    let g:table_mode_corner='|'
 endif
 
 if exists('g:plugs["coc.nvim"]')
@@ -463,7 +482,9 @@ if exists('g:plugs["vim-floaterm"]')
     let g:floaterm_keymap_next   = '<Leader>tn'
     let g:floaterm_keymap_toggle = '<F12>'
 
-    if executable("bash")
+    if &shell != ""
+        let g:floaterm_shell=&shell
+    elseif executable("bash")
         let g:floaterm_shell='bash'
     elseif executable("sh")
         let g:floaterm_shell='sh'
@@ -522,69 +543,15 @@ else
     colorscheme default
 endif
 
-if has("nvim") && exists('g:plugs["nvim-lsp-installer"]')
+if has("nvim") && exists('g:plugs["mason.nvim"]')
 lua <<endoflua
-    local lsp_installer = require "nvim-lsp-installer"
-    lsp_installer.settings({
-        ui = {
-            icons = {
-                server_installed = "✓",
-                server_pending = "➜",
-                server_uninstalled = "✗"
-            }
-        }
-    })
-
-    -- https://github.com/neovim/nvim-lspconfig#suggested-configuration
-    -- https://github.com/williamboman/nvim-lsp-installer/wiki/Advanced-Configuration#overriding-the-default-lsp-server-options
-    local opts = { noremap=true, silent=true }
-    -- vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-    vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-    vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-    -- vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
-
-    local on_attach = function(client, bufnr)
-        -- Enable completion triggered by <c-x><c-o>
-        vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-        -- Mappings.
-        -- See `:help vim.lsp.*` for documentation on any of the below functions
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-        -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-        -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-        -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-        -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-        -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-        -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-        -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-    end
-
-    local enhance_server_opts = {
-        ["eslintls"] = function(opts)
-            opts.settings = {
-                format = {
-                    enable = true,
-                },
-            }
-        end,
-    }
-
-    lsp_installer.on_server_ready(function(server)
-        local opts = {
-            on_attach = on_attach,
-        }
-
-        if enhance_server_opts[server.name] then
-            enhance_server_opts[server.name](opts)
+    require("mason").setup()
+    require("mason-lspconfig").setup()
+    require("mason-lspconfig").setup_handlers {
+        function (server_name)
+            require("lspconfig")[server_name].setup {}
         end
-
-        server:setup(opts)
-    end)
+    }
 endoflua
 
 endif
@@ -617,6 +584,11 @@ nmap cM :%s/\r$//g<CR>:noh<CR>
 " 使用z+[.-<CR>]方式跳转，上下保留一行
 nnoremap z<CR> z<CR><c-y>                       " 当前行移动到顶部
 nnoremap z- z-<c-e>                             " 当前行移动到底部
+
+" windows 下ctrl z挂起的问题
+if (g:isWindows)
+    nmap <c-z> <c-l>
+endif
 
 " ============================================================================
 "               << windows 下解决 Quickfix 乱码问题 >>
