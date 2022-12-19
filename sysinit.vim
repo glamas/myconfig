@@ -96,7 +96,7 @@ set smartcase                                   " 如果搜索模式包含大写
 " 折叠
 set foldenable                                  " 启用折叠
 set foldlevel=99                                " 默认不折叠
-set foldmethod=indent                           " indent 折叠方式
+set foldmethod=manual                           " indent 折叠方式
 "set foldmethod=marker                          " marker 折叠方式
 
 " 默认缩进设置
@@ -124,7 +124,8 @@ autocmd CursorHold,CursorHoldI * checktime
 set autochdir
 
 " 打开文件自动定位到上次的位置
-autocmd BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
+"autocmd BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 
 "               < 界面配置 >
 set shortmess=atI                               " 去掉欢迎界面
@@ -132,8 +133,11 @@ set number                                      " 显示行号
 set laststatus=2                                " 启用状态栏信息
 set cmdheight=2                                 " 设置命令行的高度为2，默认为1
 set showcmd                                     " 显示命令
-"set cursorline                                  " 突出显示当前行
+set cursorline                                  " 突出显示当前行
 
+if has('termguicolors')
+    set termguicolors
+endif
 if g:isGUI
     " 设置 gVim 窗口初始位置及大小
     " autocmd GUIEnter * simalt ~x                   " 窗口启动时自动最大化
@@ -169,6 +173,7 @@ endif
 "set listchars=tab:>-,trail:~
 set listchars=tab:∙\ ,trail:º,precedes:«,extends:»
 set list
+"set complete=.,k,w,b,t
 set completeopt=menu,menuone,noselect,longest   " 内置补全设置
 "set writebackup                                 " 保存文件前建立备份，保存成功后删除该备份
 set nobackup                                    " 设置无备份文件
@@ -276,39 +281,44 @@ endif
 "               < 安装插件 >
 " ----------------------------------------------------------------------------
 call plug#begin(expand(g:vim_plugin_install_path))
-"               < 显示增强 >
-Plug 'mhinz/vim-startify'                       " 开始页面插件
-"Plug 'mhinz/vim-janah'
-Plug 'NLKNguyen/papercolor-theme'               " 代码配色方案
-Plug 'luochen1990/rainbow'                      " 彩虹括号增强版，手动 :RainbowToggle
-Plug 'jiangmiao/auto-pairs'                     " 括号自动补全
-Plug 'itchyny/lightline.vim'                    " 状态栏增强插件
-Plug 'airblade/vim-gitgutter'                   " 代码状态插件
+"               < 界面增强 >
+Plug 'mhinz/vim-startify'                       " 开始页面
+Plug 'itchyny/lightline.vim'                    " 状态栏
+Plug 'airblade/vim-gitgutter'                   " 代码状态
 Plug 'fholgado/minibufexpl.vim'                 " buffer插件
+Plug 'lambdalisue/fern.vim'                     " 目录树
+Plug 'yuki-yano/fern-preview.vim'               " 目录树，文件预览
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }      " 撤销目录树，手动 :UndotreeToggle
+Plug 'voldikss/vim-floaterm'                    " 终端
+Plug 'Yggdroot/LeaderF'                         " 模糊搜索，需要安装ctags和ripgrep，需要+python或者+python3(nvim可以pip install pynvim支持)
+
+"               < 显示增强 >
+Plug 'sainnhe/sonokai'                         " 配色方案 https://github.com/sainnhe/sonokai/blob/master/doc/sonokai.txt
+"Plug 'NLKNguyen/papercolor-theme'
+Plug 'luochen1990/rainbow'                      " 彩虹括号增强版，手动 :RainbowToggle
+Plug 'ntpeters/vim-better-whitespace'           " 行尾空格高亮
 
 "               < 编辑增强 >
+Plug 'jiangmiao/auto-pairs'                     " 括号自动补全
 Plug 'junegunn/vim-easy-align'                  " 对齐插件
 "Plug 'mg979/vim-visual-multi'                  " 多光标编辑
 Plug 'machakann/vim-sandwich'                   " 匹配符号增强插件
-Plug 'ervandew/supertab'                        " tab补全,使用vim内置方法
 Plug 'dhruvasagar/vim-table-mode'               " 表格增强
+Plug 'tomtom/tcomment_vim'                      " 注释插件 https://github.com/tomtom/tcomment_vim  快捷键 gcc
+
+"               < 补全方案/LSP >
+Plug 'ludovicchabant/vim-gutentags'             " 项目标签生成 需要ctags
+Plug 'ervandew/supertab'                        " tab补全,使用内置方法
 "Plug 'lifepillar/vim-mucomplete'
 if has("nvim")
     Plug 'williamboman/mason.nvim'
     Plug 'williamboman/mason-lspconfig.nvim'
     Plug 'neovim/nvim-lspconfig'
+    "Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+    "Plug 'ms-jpq/coq.thirdparty', {'branch': '3p'}
 else
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
 endif
-
-"               < 功能/代码增强 >
-Plug 'ntpeters/vim-better-whitespace'           " 行尾空格高亮
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }      " 撤销目录树，手动 :UndotreeToggle
-Plug 'tomtom/tcomment_vim'                      " 注释插件 https://github.com/tomtom/tcomment_vim  快捷键 gcc
-Plug 'voldikss/vim-floaterm'                    " 终端插件
-Plug 'lambdalisue/fern.vim'                     " 目录树
-Plug 'yuki-yano/fern-preview.vim'               " 目录树，文件预览
-Plug 'Yggdroot/LeaderF'                         " 模糊搜索，需要安装ctags和ripgrep，需要+python或者+python3(nvim可以pip install pynvim支持)
 
 call plug#end()
 
@@ -337,7 +347,7 @@ function! StatusLineFileSize()
     return printf('%.1f%s', l:bytes, l:sizes[l:i])
 endfunction
     let g:lightline = {
-      \ 'colorscheme': 'PaperColor',
+      \ 'colorscheme': 'sonokai',
       \ 'active': {
       \   'right': [ [ 'lineinfo', 'charvaluehex' ],
       \              [ 'fileformat', 'fileencoding', 'filetype', 'tabinfo' ],
@@ -527,6 +537,7 @@ if exists('g:plugs["LeaderF"]')
     let g:Lf_PreviewInPopup = 1
     let g:Lf_PreviewPopupWidth = &columns * 3 / 4
     let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
+    let g:Lf_WorkingDirectoryMode = 'Ac'
 
     noremap <leader>ff :<C-U><C-R>=printf("Leaderf file %s", "")<CR><CR>
     noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
@@ -536,9 +547,14 @@ if exists('g:plugs["LeaderF"]')
     noremap <leader>fg :<C-U><C-R>=printf("Leaderf rg -F -e %s", "")<CR>
 endif
 
+" 设置插件主题
 set background=dark
-if exists('g:plugs["papercolor-theme"]')
-    colorscheme PaperColor
+if exists('g:plugs["sonokai"]')
+    let g:sonokai_style = 'shusia'
+    let g:sonokai_enable_italic = 0
+    let g:sonokai_disable_italic_comment = 1
+    let g:sonokai_better_performance = 1
+    colorscheme sonokai
 else
     colorscheme default
 endif
@@ -565,8 +581,15 @@ let mapleader = "\\"
 " 终端模式下，Esc退出命令
 tnoremap <Esc> <C-\><C-n>
 
+" 使用z+[.-<CR>]方式跳转，上下保留一行
+nnoremap z<CR> z<CR><c-y>                       " 当前行移动到顶部
+nnoremap z- z-<c-e>                             " 当前行移动到底部
+
 " 常规模式下，空格翻页。如果配置了其他<space>开头的键映射，这里翻页会停顿一下
 nmap <space> <c-f>
+
+" 用空格键来开关折叠
+"nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
 
 " 行尾空格处理，常规模式下输入 cS 清除行尾空格，输入 cM 清除行尾 ^M 符号
 nmap cS :%s/\s\+$//g<CR>:noh<CR>
@@ -578,12 +601,28 @@ nmap cM :%s/\r$//g<CR>:noh<CR>
 "inoremap <a-h> <Left>
 "inoremap <a-l> <Right>
 
-" 用空格键来开关折叠
-"nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
+" 搜索跳转，将光标位置置于中间
+nnoremap n nzzzv
+nnoremap N Nzzzv
 
-" 使用z+[.-<CR>]方式跳转，上下保留一行
-nnoremap z<CR> z<CR><c-y>                       " 当前行移动到顶部
-nnoremap z- z-<c-e>                             " 当前行移动到底部
+"" 清除搜索高亮
+nnoremap <silent> <leader><space> :noh<cr>
+
+" 区块选中后，上下移动
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+
+" 大写状态时，保存和退出
+cnoreabbrev W! w!
+cnoreabbrev Q! q!
+cnoreabbrev Qall! qall!
+cnoreabbrev Wq wq
+cnoreabbrev Wa wa
+cnoreabbrev wQ wq
+cnoreabbrev WQ wq
+cnoreabbrev W w
+cnoreabbrev Q q
+cnoreabbrev Qall qall
 
 " windows 下ctrl z挂起的问题
 if (g:isWindows)
