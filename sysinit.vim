@@ -10,6 +10,7 @@ else
     let g:isLinux = 1
 endif
 
+" todo：判断 win32unix
 
 "               < 判断是终端还是 Gvim >
 if has("gui_running")
@@ -203,7 +204,12 @@ for venv in venv_list
 endfor
 " 避免和已激活虚拟环境冲突，设置$VIRTUAL_ENV为空
 let $VIRTUAL_ENV = ""
-
+" python 设置匹配符号展开时的缩进
+let python_indent = {
+\   'open_paren': 'shiftwidth()',
+\   'nested_paren': 'shiftwidth()',
+\   'closed_paren_align_last_line': v:false
+\}
 
 " ============================================================================
 "               << 插件配置 >>
@@ -286,7 +292,7 @@ Plug 'mhinz/vim-startify'                       " 开始页面
 Plug 'itchyny/lightline.vim'                    " 状态栏
 Plug 'airblade/vim-gitgutter'                   " 代码状态
 Plug 'fholgado/minibufexpl.vim'                 " buffer插件
-Plug 'lambdalisue/fern.vim'                     " 目录树
+Plug 'lambdalisue/fern.vim', {'branch': 'main'}         " 目录树
 Plug 'yuki-yano/fern-preview.vim'               " 目录树，文件预览
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }      " 撤销目录树，手动 :UndotreeToggle
 Plug 'voldikss/vim-floaterm'                    " 终端
